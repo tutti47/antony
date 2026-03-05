@@ -6,123 +6,241 @@
 <title>La Chemise d'Antony</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-  :root { --cream:#F5F0E8;--dark:#1A1410;--accent:#C4773B;--accent2:#7B9E87;--muted:#8A7F72;--card:#FDFAF4;--border:#DDD5C4; }
-  *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:'DM Mono',monospace;background:var(--cream);color:var(--dark);min-height:100vh;background-image:repeating-linear-gradient(0deg,transparent,transparent 39px,var(--border) 39px,var(--border) 40px),repeating-linear-gradient(90deg,transparent,transparent 39px,var(--border) 39px,var(--border) 40px);background-size:40px 40px}
-  .container{max-width:900px;margin:0 auto;padding:2rem 1rem}
-  #loader{position:fixed;inset:0;background:var(--cream);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:999;gap:1rem}
-  .spinner{width:32px;height:32px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite}
-  #loader p{font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
-  @keyframes spin{to{transform:rotate(360deg)}}
-  header{text-align:center;margin-bottom:3rem}
-  .header-tag{font-size:.65rem;letter-spacing:.3em;text-transform:uppercase;color:var(--muted);margin-bottom:.5rem;display:block}
-  h1{font-family:'Playfair Display',serif;font-size:clamp(2.5rem,7vw,4.5rem);font-weight:900;line-height:1;letter-spacing:-.02em}
-  h1 span{color:var(--accent);font-style:italic}
-  .subtitle{font-size:.72rem;letter-spacing:.15em;color:var(--muted);margin-top:.75rem;text-transform:uppercase}
-  .week-badge{display:inline-block;background:var(--dark);color:var(--cream);font-size:.6rem;letter-spacing:.2em;padding:.3rem .8rem;margin-top:1rem;text-transform:uppercase}
-  .sync-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--accent2);margin-right:.4rem;animation:pulse 2s infinite;vertical-align:middle}
-  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-  .tabs{display:flex;border:1.5px solid var(--dark);overflow:hidden;margin-bottom:2rem}
-  .tab{flex:1;padding:.75rem;background:transparent;border:none;border-right:1.5px solid var(--dark);font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;color:var(--muted);transition:all .2s}
-  .tab:last-child{border-right:none}
-  .tab.active{background:var(--dark);color:var(--cream)}
-  .tab:hover:not(.active){background:var(--border)}
-  .section{display:none}
-  .section.active{display:block;animation:fadeIn .25s ease}
-  @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
-  .shirts-legend{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;margin-bottom:2rem}
-  .shirt-item{background:var(--card);border:1.5px solid var(--border);padding:.75rem;display:flex;align-items:center;gap:.6rem;font-size:.65rem}
-  .shirt-swatch{width:28px;height:28px;border:1.5px solid var(--border);flex-shrink:0;position:relative;overflow:hidden}
-  .shirt-swatch.rayee::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(45deg,transparent,transparent 3px,rgba(255,255,255,.5) 3px,rgba(255,255,255,.5) 5px)}
-  .shirt-code{font-weight:500;font-size:.75rem}
-  .shirt-matiere{color:var(--muted);font-size:.6rem}
-  .player-section{background:var(--card);border:1.5px solid var(--border);padding:1.25rem;margin-bottom:1.5rem}
-  .player-section h3{font-family:'Playfair Display',serif;font-size:1rem;margin-bottom:1rem}
-  .week-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--dark);border:1.5px solid var(--dark);margin-bottom:1.5rem}
-  .day-col,.real-day{background:var(--card);padding:1rem .75rem}
-  .day-label{font-size:.6rem;letter-spacing:.25em;text-transform:uppercase;color:var(--muted);margin-bottom:.75rem;display:block}
-  .day-label strong{display:block;font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:var(--dark);letter-spacing:0;margin-bottom:.1rem}
-  select{width:100%;padding:.5rem 1.5rem .5rem .4rem;border:1.5px solid var(--border);background:white url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%231A1410'/%3E%3C/svg%3E") no-repeat right .5rem center;font-family:'DM Mono',monospace;font-size:.6rem;cursor:pointer;appearance:none;color:var(--dark)}
-  select:focus{outline:none;border-color:var(--accent)}
-  .selected-preview{margin-top:.5rem;height:4px;transition:background .3s}
-  input[type=text]{width:100%;padding:.5rem .75rem;border:1.5px solid var(--border);background:white;font-family:'DM Mono',monospace;font-size:.75rem;color:var(--dark)}
-  input[type=text]:focus{outline:none;border-color:var(--accent)}
-  .btn{padding:.75rem 1.5rem;border:1.5px solid var(--dark);background:transparent;font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;transition:all .2s;color:var(--dark)}
-  .btn:hover{background:var(--dark);color:var(--cream)}
-  .btn:disabled{opacity:.4;cursor:not-allowed}
-  .btn-primary{background:var(--dark);color:var(--cream)}
-  .btn-primary:hover{background:var(--accent);border-color:var(--accent)}
-  .btn-sm{padding:.4rem .75rem;font-size:.6rem}
-  .btn-danger{border-color:#c0392b;color:#c0392b}
-  .btn-danger:hover{background:#c0392b;color:white}
-  .actions{display:flex;gap:.75rem;flex-wrap:wrap;margin-top:1rem}
-  .pronostic-card{background:var(--card);border:1.5px solid var(--border);margin-bottom:.75rem;overflow:hidden}
-  .pronostic-header{display:flex;align-items:center;justify-content:space-between;padding:.85rem 1rem;border-bottom:1px solid var(--border)}
-  .player-name{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700}
-  .score-badge{background:var(--dark);color:var(--cream);padding:.2rem .6rem;font-size:.65rem}
-  .pronostic-days{display:grid;grid-template-columns:repeat(4,1fr)}
-  .pronostic-day{padding:.6rem .75rem;border-right:1px solid var(--border);font-size:.6rem}
-  .pronostic-day:last-child{border-right:none}
-  .pronostic-day .day-name{color:var(--muted);font-size:.55rem;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.25rem}
-  .color-dot{width:8px;height:8px;display:inline-block;border-radius:50%;margin-right:.3rem;vertical-align:middle}
-  .result-card{background:var(--card);border:1.5px solid var(--border);margin-bottom:.75rem;overflow:hidden}
-  .result-header{display:flex;align-items:center;justify-content:space-between;padding:.85rem 1rem;background:var(--dark);color:var(--cream)}
-  .result-name{font-family:'Playfair Display',serif;font-size:1.1rem}
-  .result-score{font-size:1.5rem}
-  .result-detail{font-size:.6rem;color:rgba(255,255,255,.6)}
-  .result-days{display:grid;grid-template-columns:repeat(4,1fr)}
-  .result-day{padding:.75rem;border-right:1px solid var(--border);font-size:.6rem;text-align:center}
-  .result-day:last-child{border-right:none}
-  .result-day .day-name{color:var(--muted);font-size:.55rem;text-transform:uppercase;margin-bottom:.3rem}
-  .result-day.correct{background:#e8f5e9}
-  .result-day.wrong{background:#fce4e4}
-  .check{color:#27ae60}.cross{color:#e74c3c}
-  .bonus-banner{background:var(--accent);color:white;text-align:center;padding:.5rem;font-size:.65rem;letter-spacing:.2em;text-transform:uppercase}
-  .ranking-table{border:1.5px solid var(--dark);overflow:hidden;margin-bottom:1.5rem}
-  .ranking-header{display:grid;grid-template-columns:2rem 1fr repeat(5,3.5rem);background:var(--dark);color:var(--cream);padding:.6rem 1rem;font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;gap:.5rem;align-items:center}
-  .ranking-row{display:grid;grid-template-columns:2rem 1fr repeat(5,3.5rem);padding:.75rem 1rem;border-top:1px solid var(--border);font-size:.7rem;gap:.5rem;align-items:center;background:var(--card);transition:background .2s}
-  .ranking-row:hover{background:var(--cream)}
-  .rank-num{font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;color:var(--muted)}
-  .rank-num.top1{color:#C4A017}.rank-num.top2{color:var(--muted)}.rank-num.top3{color:var(--accent)}
-  .rank-name{font-family:'Playfair Display',serif;font-size:.9rem}
-  .rank-total{font-weight:500;text-align:center}
-  .rank-cell{text-align:center;color:var(--muted);font-size:.65rem}
-  .real-shirt-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--dark);border:1.5px solid var(--dark);margin-bottom:1.5rem}
-  .alert{padding:.75rem 1rem;margin-bottom:1rem;font-size:.7rem;border:1.5px solid}
-  .alert-success{border-color:var(--accent2);background:#f0f7f2;color:#2d5a3d}
-  .alert-info{border-color:var(--accent);background:#fdf5ee;color:#6b3a1a}
-  .alert-error{border-color:#c0392b;background:#fce4e4;color:#c0392b}
-  .empty{text-align:center;padding:3rem;color:var(--muted)}
-  .empty-icon{font-size:3rem;margin-bottom:1rem}
-  .empty p{font-size:.75rem}
-  .section-title{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;margin-bottom:.25rem}
-  .section-sub{color:var(--muted);font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;margin-bottom:1.5rem}
-  .month-selector{display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem}
-  .month-selector select{width:auto}
-  .divider{border:none;border-top:1.5px solid var(--border);margin:1.5rem 0}
-  @media(max-width:600px){.shirts-legend{grid-template-columns:repeat(2,1fr)}.week-grid,.pronostic-days,.result-days,.real-shirt-grid{grid-template-columns:repeat(2,1fr)}.ranking-header,.ranking-row{grid-template-columns:2rem 1fr 3rem 3rem}.ranking-header span:nth-child(n+5),.ranking-row span:nth-child(n+5){display:none}}
+  :root {
+    --cream: #F5F0E8;
+    --dark: #1A1410;
+    --accent: #C4773B;
+    --accent2: #7B9E87;
+    --muted: #8A7F72;
+    --card: #FDFAF4;
+    --border: #DDD5C4;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'DM Mono', monospace;
+    background: var(--cream);
+    color: var(--dark);
+    min-height: 100vh;
+    background-image:
+      repeating-linear-gradient(0deg, transparent, transparent 39px, var(--border) 39px, var(--border) 40px),
+      repeating-linear-gradient(90deg, transparent, transparent 39px, var(--border) 39px, var(--border) 40px);
+    background-size: 40px 40px;
+  }
+  .container { max-width: 960px; margin: 0 auto; padding: 2rem 1rem; }
+
+  #loader { position: fixed; inset: 0; background: var(--cream); display: flex; align-items: center; justify-content: center; z-index: 999; flex-direction: column; gap: 1rem; }
+  #loader p { font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); }
+  .spinner { width: 32px; height: 32px; border: 2px solid var(--border); border-top-color: var(--dark); border-radius: 50%; animation: spin 0.8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .modal-overlay { position: fixed; inset: 0; background: rgba(26,20,16,0.75); z-index: 500; display: flex; align-items: center; justify-content: center; }
+  .modal { background: var(--card); border: 2px solid var(--dark); padding: 2rem; max-width: 430px; width: 92%; }
+  .modal h2 { font-family: 'Playfair Display', serif; font-size: 1.5rem; margin-bottom: 0.75rem; }
+  .modal p { font-size: 0.72rem; color: var(--muted); line-height: 1.7; margin-bottom: 1rem; }
+  .modal .warning { color: #c0392b; font-size: 0.7rem; background: #fce4e4; border: 1.5px solid #c0392b; padding: 0.75rem; margin-bottom: 1.25rem; line-height: 1.6; }
+  .modal-actions { display: flex; gap: 0.75rem; margin-top: 1rem; }
+
+  header { text-align: center; margin-bottom: 2.5rem; }
+  .header-tag { font-size: 0.65rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.5rem; display: block; }
+  h1 { font-family: 'Playfair Display', serif; font-size: clamp(2.5rem, 7vw, 4.5rem); font-weight: 900; line-height: 1; letter-spacing: -0.02em; }
+  h1 span { color: var(--accent); font-style: italic; }
+  .subtitle { font-size: 0.72rem; letter-spacing: 0.15em; color: var(--muted); margin-top: 0.75rem; text-transform: uppercase; }
+  .week-badge { display: inline-block; background: var(--dark); color: var(--cream); font-size: 0.6rem; letter-spacing: 0.2em; padding: 0.3rem 0.8rem; margin-top: 1rem; text-transform: uppercase; }
+
+  .time-banner { padding: 0.75rem 1rem; margin-bottom: 1.5rem; font-size: 0.7rem; border: 1.5px solid; display: flex; align-items: center; gap: 0.6rem; }
+  .time-banner.open { border-color: var(--accent2); background: #f0f7f2; color: #2d5a3d; }
+  .time-banner.closed { border-color: var(--accent); background: #fdf5ee; color: #6b3a1a; }
+  .time-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .time-dot.green { background: #27ae60; animation: pulse 2s infinite; }
+  .time-dot.orange { background: var(--accent); }
+
+  .meteo-block { background: var(--card); border: 1.5px solid var(--border); margin-bottom: 2rem; overflow: hidden; }
+  .meteo-header { background: var(--dark); color: var(--cream); padding: 0.65rem 1rem; font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; display: flex; align-items: center; justify-content: space-between; }
+  .meteo-grid { display: grid; grid-template-columns: repeat(4, 1fr); }
+  .meteo-day { padding: 0.9rem 0.75rem; border-right: 1px solid var(--border); text-align: center; font-size: 0.62rem; }
+  .meteo-day:last-child { border-right: none; }
+  .meteo-day .m-day { color: var(--muted); font-size: 0.55rem; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 0.3rem; }
+  .meteo-day .m-icon { font-size: 1.7rem; margin: 0.3rem 0; }
+  .meteo-day .m-temp { font-size: 0.8rem; font-weight: 500; }
+  .meteo-day .m-temp span { color: var(--muted); font-size: 0.62rem; }
+  .meteo-day .m-desc { color: var(--muted); font-size: 0.55rem; margin-top: 0.25rem; line-height: 1.4; }
+  .meteo-day .m-rain { color: #5B9BD5; font-size: 0.55rem; margin-top: 0.2rem; }
+  .meteo-loading { padding: 1.5rem; text-align: center; color: var(--muted); font-size: 0.65rem; letter-spacing: 0.1em; }
+
+  .tabs { display: flex; margin-bottom: 2rem; border: 1.5px solid var(--dark); overflow: hidden; }
+  .tab { flex: 1; padding: 0.75rem; background: transparent; border: none; border-right: 1.5px solid var(--dark); font-family: 'DM Mono', monospace; font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; cursor: pointer; color: var(--muted); transition: all 0.2s; }
+  .tab:last-child { border-right: none; }
+  .tab.active { background: var(--dark); color: var(--cream); }
+  .tab:hover:not(.active) { background: var(--border); color: var(--dark); }
+
+  .section { display: none; }
+  .section.active { display: block; animation: fadeIn 0.25s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+  .shirts-legend { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; margin-bottom: 2rem; }
+  .shirt-item { background: var(--card); border: 1.5px solid var(--border); padding: 0.75rem; display: flex; align-items: center; gap: 0.6rem; font-size: 0.65rem; }
+  .shirt-swatch { width: 28px; height: 28px; border: 1.5px solid var(--border); flex-shrink: 0; position: relative; overflow: hidden; }
+  .shirt-swatch.rayee::after { content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(45deg, transparent, transparent 3px, rgba(255,255,255,0.5) 3px, rgba(255,255,255,0.5) 5px); }
+  .shirt-code { font-weight: 500; font-size: 0.75rem; }
+  .shirt-matiere { color: var(--muted); font-size: 0.6rem; }
+
+  .week-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--dark); border: 1.5px solid var(--dark); margin-bottom: 1.5rem; }
+  .day-col { background: var(--card); padding: 1rem 0.75rem; }
+  .day-label { font-size: 0.6rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.75rem; display: block; }
+  .day-label strong { display: block; font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 700; color: var(--dark); letter-spacing: 0; margin-bottom: 0.1rem; }
+  select { width: 100%; padding: 0.5rem 0.4rem; border: 1.5px solid var(--border); background: white; font-family: 'DM Mono', monospace; font-size: 0.6rem; cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%231A1410'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 0.5rem center; padding-right: 1.5rem; color: var(--dark); }
+  select:focus { outline: none; border-color: var(--accent); }
+  .selected-preview { margin-top: 0.5rem; height: 4px; transition: background 0.3s; }
+
+  .player-section { background: var(--card); border: 1.5px solid var(--border); padding: 1.25rem; margin-bottom: 1.5rem; }
+  .player-section h3 { font-family: 'Playfair Display', serif; font-size: 1rem; margin-bottom: 1rem; }
+  input[type="text"] { flex: 1; padding: 0.5rem 0.75rem; border: 1.5px solid var(--border); background: white; font-family: 'DM Mono', monospace; font-size: 0.75rem; color: var(--dark); }
+  input[type="text"]:focus { outline: none; border-color: var(--accent); }
+
+  .btn { padding: 0.75rem 1.5rem; border: 1.5px solid var(--dark); background: transparent; font-family: 'DM Mono', monospace; font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; color: var(--dark); }
+  .btn:hover { background: var(--dark); color: var(--cream); }
+  .btn-primary { background: var(--dark); color: var(--cream); }
+  .btn-primary:hover { background: var(--accent); border-color: var(--accent); }
+  .btn-sm { padding: 0.4rem 0.75rem; font-size: 0.6rem; }
+  .btn-danger { border-color: #c0392b; color: #c0392b; }
+  .btn-danger:hover { background: #c0392b; color: white; }
+  .actions { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 1rem; }
+
+  .pronostic-card { background: var(--card); border: 1.5px solid var(--border); margin-bottom: 0.75rem; overflow: hidden; }
+  .pronostic-header { display: flex; align-items: center; justify-content: space-between; padding: 0.85rem 1rem; border-bottom: 1px solid var(--border); }
+  .player-name-big { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 700; }
+  .score-badge { background: var(--dark); color: var(--cream); padding: 0.2rem 0.6rem; font-size: 0.65rem; }
+  .pronostic-days { display: grid; grid-template-columns: repeat(4, 1fr); }
+  .pronostic-day { padding: 0.6rem 0.75rem; border-right: 1px solid var(--border); font-size: 0.6rem; }
+  .pronostic-day:last-child { border-right: none; }
+  .pronostic-day .day-name { color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; font-size: 0.55rem; margin-bottom: 0.25rem; }
+  .color-dot { width: 8px; height: 8px; display: inline-block; border-radius: 50%; margin-right: 0.3rem; vertical-align: middle; }
+
+  .score-legend { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+  .score-legend-item { display: flex; align-items: center; gap: 0.4rem; font-size: 0.62rem; color: var(--muted); }
+  .legend-dot { width: 12px; height: 12px; border-radius: 2px; flex-shrink: 0; }
+
+  .result-card { background: var(--card); border: 1.5px solid var(--border); margin-bottom: 0.75rem; overflow: hidden; }
+  .result-header { display: flex; align-items: center; justify-content: space-between; padding: 0.85rem 1rem; background: var(--dark); color: var(--cream); }
+  .result-name { font-family: 'Playfair Display', serif; font-size: 1.1rem; }
+  .result-score-big { font-size: 1.5rem; font-weight: 500; }
+  .result-detail { font-size: 0.6rem; color: rgba(255,255,255,0.6); }
+  .result-days { display: grid; grid-template-columns: repeat(4, 1fr); }
+  .result-day { padding: 0.75rem; border-right: 1px solid var(--border); font-size: 0.6rem; text-align: center; }
+  .result-day:last-child { border-right: none; }
+  .result-day .day-name { color: var(--muted); font-size: 0.55rem; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.3rem; }
+  .result-day.correct { background: #e8f5e9; }
+  .result-day.partial { background: #fff8e1; }
+  .result-day.wrong { background: #fce4e4; }
+  .check { color: #27ae60; } .half { color: #F39C12; } .cross { color: #e74c3c; }
+  .bonus-banner { background: var(--accent); color: white; text-align: center; padding: 0.5rem; font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; }
+
+  .ranking-table { border: 1.5px solid var(--dark); overflow: hidden; margin-bottom: 1.5rem; }
+  .ranking-header { display: grid; grid-template-columns: 2rem 1fr repeat(5, 3.5rem); background: var(--dark); color: var(--cream); padding: 0.6rem 1rem; font-size: 0.6rem; letter-spacing: 0.15em; text-transform: uppercase; gap: 0.5rem; align-items: center; }
+  .ranking-row { display: grid; grid-template-columns: 2rem 1fr repeat(5, 3.5rem); padding: 0.75rem 1rem; border-top: 1px solid var(--border); font-size: 0.7rem; gap: 0.5rem; align-items: center; background: var(--card); transition: background 0.2s; }
+  .ranking-row:hover { background: var(--cream); }
+  .rank-num { font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 700; color: var(--muted); }
+  .rank-num.top1 { color: #C4A017; } .rank-num.top2 { color: var(--muted); } .rank-num.top3 { color: var(--accent); }
+  .rank-name { font-family: 'Playfair Display', serif; font-size: 0.9rem; }
+  .rank-total { font-weight: 500; text-align: center; }
+  .rank-cell { text-align: center; color: var(--muted); font-size: 0.65rem; }
+
+  .month-selector { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; }
+  .month-selector select { width: auto; }
+
+  .alert { padding: 0.75rem 1rem; margin-bottom: 1rem; font-size: 0.7rem; border: 1.5px solid; }
+  .alert-success { border-color: var(--accent2); background: #f0f7f2; color: #2d5a3d; }
+  .alert-info { border-color: var(--accent); background: #fdf5ee; color: #6b3a1a; }
+  .alert-error { border-color: #c0392b; background: #fce4e4; color: #7b1a1a; }
+
+  .empty { text-align: center; padding: 3rem; color: var(--muted); }
+  .empty-icon { font-size: 3rem; margin-bottom: 1rem; }
+  .empty p { font-size: 0.75rem; }
+
+  .section-title { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; margin-bottom: 0.25rem; }
+  .section-sub { color: var(--muted); font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 1.5rem; }
+  .divider { border: none; border-top: 1.5px solid var(--border); margin: 1.5rem 0; }
+
+  .sync-status { font-size: 0.6rem; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem; }
+  .sync-dot { width: 7px; height: 7px; border-radius: 50%; background: #27ae60; display: inline-block; margin-right: 0.4rem; animation: pulse 2s infinite; }
+  .sync-dot.offline { background: #e74c3c; animation: none; }
+  @keyframes pulse { 0%,100%{opacity:1}50%{opacity:0.4} }
+
+  .big-reset-zone { border: 2px dashed #c0392b; padding: 1.5rem; margin-top: 2rem; background: #fff5f5; }
+  .big-reset-zone h3 { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: #c0392b; margin-bottom: 0.5rem; }
+  .big-reset-zone p { font-size: 0.68rem; color: #7b1a1a; line-height: 1.7; margin-bottom: 1rem; }
+  .btn-big-reset { width: 100%; padding: 1rem; border: 2px solid #c0392b; background: #c0392b; color: white; font-family: 'DM Mono', monospace; font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; }
+  .btn-big-reset:hover { background: #922b21; border-color: #922b21; }
+
+  @media (max-width: 600px) {
+    .shirts-legend { grid-template-columns: repeat(2, 1fr); }
+    .week-grid, .pronostic-days, .result-days, .meteo-grid { grid-template-columns: repeat(2, 1fr); }
+    .ranking-header, .ranking-row { grid-template-columns: 2rem 1fr 3rem 3rem; }
+    .ranking-header span:nth-child(n+5), .ranking-row span:nth-child(n+5) { display: none; }
+  }
 </style>
 </head>
 <body>
-<div id="loader"><div class="spinner"></div><p>Connexion en cours…</p></div>
+
+<div id="loader"><div class="spinner"></div><p>Connexion à Firebase…</p></div>
+
+<div class="modal-overlay" id="resetModal" style="display:none">
+  <div class="modal">
+    <h2>⚠️ Big Reset</h2>
+    <p>Vous êtes sur le point de <strong>tout effacer définitivement</strong> :</p>
+    <div class="warning">
+      ⛔ Pronostics de la semaine en cours<br>
+      ⛔ Scores calculés<br>
+      ⛔ Tout l'historique mensuel<br><br>
+      Cette action est <strong>irréversible</strong>. Aucune récupération possible.
+    </div>
+    <p>Pour confirmer, tapez <strong>RESET</strong> ci-dessous :</p>
+    <input type="text" id="resetConfirmInput" placeholder="Tapez RESET ici..." style="width:100%;margin:0.75rem 0">
+    <div id="resetModalAlert"></div>
+    <div class="modal-actions">
+      <button class="btn btn-danger" onclick="confirmBigReset()">Tout effacer définitivement</button>
+      <button class="btn" onclick="closeResetModal()">Annuler</button>
+    </div>
+  </div>
+</div>
+
 <div class="container">
   <header>
     <span class="header-tag">Bureau · Jeu interne</span>
     <h1>La Chemise<br>d'<span>Antony</span></h1>
     <p class="subtitle">Pronostiquez · Comparez · Triomphez</p>
-    <div class="week-badge" id="weekBadge"><span class="sync-dot"></span>En direct</div>
+    <div class="week-badge" id="weekBadge">Semaine en cours</div>
   </header>
+
+  <div class="sync-status"><span class="sync-dot" id="syncDot"></span><span id="syncLabel">Connecté · Temps réel</span></div>
+
+  <div class="meteo-block">
+    <div class="meteo-header">
+      <span>🌤 Météo Angers · Semaine prochaine</span>
+      <span id="meteoUpdate" style="opacity:0.6;font-size:0.55rem"></span>
+    </div>
+    <div id="meteoContent"><div class="meteo-loading">Chargement météo…</div></div>
+  </div>
+
   <div class="tabs">
     <button class="tab active" onclick="showTab('pronostic')">Pronostiquer</button>
     <button class="tab" onclick="showTab('resultats')">Résultats</button>
     <button class="tab" onclick="showTab('classement')">Classement</button>
     <button class="tab" onclick="showTab('admin')">Admin</button>
   </div>
+
+  <!-- PRONOSTIC -->
   <div class="section active" id="tab-pronostic">
+    <div id="timeBanner"></div>
     <div class="section-title">Vos pronostics</div>
-    <p class="section-sub">Jeudi soir · Semaine suivante complète</p>
+    <p class="section-sub">Jeudi 15h–18h · Semaine suivante complète</p>
     <div class="shirts-legend" id="shirtsLegend"></div>
-    <div class="player-section"><h3>Qui pronostique ?</h3><input type="text" id="playerName" placeholder="Votre prénom..." maxlength="20"></div>
+    <div class="player-section">
+      <h3>Qui pronostique ?</h3>
+      <div style="display:flex;gap:0.75rem">
+        <input type="text" id="playerName" placeholder="Votre prénom..." maxlength="20">
+      </div>
+    </div>
     <div class="week-grid">
       <div class="day-col"><span class="day-label"><strong>Lundi</strong></span><select id="pick-lundi" onchange="updatePreview('lundi')"><option value="">— Choisir —</option></select><div class="selected-preview" id="prev-lundi"></div></div>
       <div class="day-col"><span class="day-label"><strong>Mardi</strong></span><select id="pick-mardi" onchange="updatePreview('mardi')"><option value="">— Choisir —</option></select><div class="selected-preview" id="prev-mardi"></div></div>
@@ -131,102 +249,414 @@
     </div>
     <div id="pronosticAlert"></div>
     <div class="actions">
-      <button class="btn btn-primary" id="btnSubmit" onclick="submitPronostic()">✓ Valider mon pronostic</button>
+      <button class="btn btn-primary" onclick="submitPronostic()">✓ Valider mon pronostic</button>
       <button class="btn" onclick="resetForm()">Réinitialiser</button>
     </div>
     <hr class="divider">
-    <div class="section-title" style="font-size:1.1rem;margin-bottom:.25rem">Pronostics de la semaine</div>
-    <p class="section-sub">En direct · <span id="pronosticCount">0</span> joueur(s)</p>
+    <div class="section-title" style="font-size:1.1rem;margin-bottom:0.25rem">Pronostics de la semaine</div>
+    <p class="section-sub">Temps réel · <span id="pronosticCount">0</span> joueur(s)</p>
     <div id="pronosticsList"></div>
   </div>
+
+  <!-- RÉSULTATS -->
   <div class="section" id="tab-resultats">
     <div class="section-title">Résultats de la semaine</div>
     <p class="section-sub">Comparez les pronostics avec la réalité</p>
+    <div class="score-legend">
+      <div class="score-legend-item"><div class="legend-dot" style="background:#e8f5e9;border:1px solid #27ae60"></div>Bonne chemise + bon jour = 1 pt</div>
+      <div class="score-legend-item"><div class="legend-dot" style="background:#fff8e1;border:1px solid #F39C12"></div>Bonne chemise mauvais jour = 1 pt</div>
+      <div class="score-legend-item"><div class="legend-dot" style="background:#fce4e4;border:1px solid #e74c3c"></div>Mauvaise chemise = 0 pt</div>
+      <div class="score-legend-item"><div class="legend-dot" style="background:var(--accent);border:1px solid var(--accent)"></div>Ordre parfait = +3 pts bonus</div>
+    </div>
     <div id="resultsContent"><div class="empty"><div class="empty-icon">👔</div><p>Les résultats apparaîtront<br>une fois la semaine saisie en Admin.</p></div></div>
   </div>
+
+  <!-- CLASSEMENT -->
   <div class="section" id="tab-classement">
     <div class="section-title">Classement mensuel</div>
     <p class="section-sub">Cumul des points · Mois en cours</p>
-    <div class="month-selector"><label style="font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">Mois :</label><select id="monthSelect" onchange="renderRanking()"></select></div>
+    <div class="month-selector">
+      <label style="font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted)">Mois :</label>
+      <select id="monthSelect" onchange="renderRanking()"></select>
+    </div>
     <div class="ranking-table">
       <div class="ranking-header"><span>#</span><span>Joueur</span><span style="text-align:center">Total</span><span style="text-align:center">S1</span><span style="text-align:center">S2</span><span style="text-align:center">S3</span><span style="text-align:center">S4</span></div>
       <div id="rankingBody"></div>
     </div>
   </div>
+
+  <!-- ADMIN -->
   <div class="section" id="tab-admin">
     <div class="section-title">Administration</div>
     <p class="section-sub">Réservé à l'arbitre de la semaine</p>
     <div class="player-section">
       <h3>Chemises réelles portées par Antony</h3>
-      <p style="font-size:.65rem;color:var(--muted);margin-bottom:1rem">Saisissez les vraies chemises pour calculer les scores.</p>
-      <div class="real-shirt-grid">
-        <div class="real-day"><span class="day-label"><strong>Lundi</strong></span><select id="real-lundi" onchange="updatePreview('real-lundi')"><option value="">— Chemise —</option></select><div class="selected-preview" id="prev-real-lundi"></div></div>
-        <div class="real-day"><span class="day-label"><strong>Mardi</strong></span><select id="real-mardi" onchange="updatePreview('real-mardi')"><option value="">— Chemise —</option></select><div class="selected-preview" id="prev-real-mardi"></div></div>
-        <div class="real-day"><span class="day-label"><strong>Mercredi</strong></span><select id="real-mercredi" onchange="updatePreview('real-mercredi')"><option value="">— Chemise —</option></select><div class="selected-preview" id="prev-real-mercredi"></div></div>
-        <div class="real-day"><span class="day-label"><strong>Jeudi</strong></span><select id="real-jeudi" onchange="updatePreview('real-jeudi')"><option value="">— Chemise —</option></select><div class="selected-preview" id="prev-real-jeudi"></div></div>
+      <p style="font-size:0.65rem;color:var(--muted);margin-bottom:1rem">Saisissez les vraies chemises pour calculer les scores.</p>
+      <div class="week-grid">
+        <div class="day-col"><span class="day-label"><strong>Lundi</strong></span><select id="real-lundi" onchange="updatePreview('real-lundi')"><option value="">— Chemise —</option></select><div class="selected-preview" id="prev-real-lundi"></div></div>
+        <div class="day-col"><span class="day-label"><strong>Mardi</strong></span><select id="real-mardi" onchange="updatePreview('real-mardi')"><option value="">— Chemise —</option></select><div class="selected-preview" id="prev-real-mardi"></div></div>
+        <div class="day-col"><span class="day-label"><strong>Mercredi</strong></span><select id="real-mercredi" onchange="updatePreview('real-mercredi')"><option value="">— Chemise —</option></select><div class="selected-preview" id="prev-real-mercredi"></div></div>
+        <div class="day-col"><span class="day-label"><strong>Jeudi</strong></span><select id="real-jeudi" onchange="updatePreview('real-jeudi')"><option value="">— Chemise —</option></select><div class="selected-preview" id="prev-real-jeudi"></div></div>
       </div>
       <div id="adminAlert"></div>
       <div class="actions">
         <button class="btn btn-primary" onclick="validateResults()">✓ Valider et calculer les scores</button>
-        <button class="btn btn-danger" onclick="resetWeek()">⚠ Réinitialiser la semaine</button>
+        <button class="btn btn-danger btn-sm" onclick="resetWeek()">Réinitialiser la semaine</button>
       </div>
     </div>
     <hr class="divider">
-    <div class="section-title" style="font-size:1.1rem;margin-bottom:.5rem">Joueurs inscrits</div>
+    <div class="section-title" style="font-size:1.1rem;margin-bottom:0.5rem">Joueurs inscrits</div>
     <div id="adminPlayers"></div>
+    <div class="big-reset-zone">
+      <h3>🔴 Zone de danger — Big Reset</h3>
+      <p>Efface <strong>absolument tout</strong> : pronostics en cours, scores de la semaine, et <strong>tout l'historique mensuel</strong>.<br>Irréversible. À utiliser uniquement pour remettre le jeu à zéro complètement.</p>
+      <button class="btn-big-reset" onclick="openResetModal()">⚠️ BIG RESET — Tout effacer définitivement</button>
+    </div>
   </div>
 </div>
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
-import { getFirestore, doc, setDoc, deleteDoc, onSnapshot, collection, getDocs } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
+import { getFirestore, doc, collection, setDoc, getDocs, deleteDoc, onSnapshot, writeBatch }
+  from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
 
-const app = initializeApp({ apiKey:"AIzaSyB9-6f-jm8CU-enHujiJo8d8ZEHJvyDEaA", authDomain:"antony-chemise.firebaseapp.com", projectId:"antony-chemise", storageBucket:"antony-chemise.firebasestorage.app", messagingSenderId:"111612450828", appId:"1:111612450828:web:ac68dc258a2dc73723f629" });
+const firebaseConfig = {
+  apiKey: "AIzaSyB9-6f-jm8CU-enHujiJo8d8ZEHJvyDEaA",
+  authDomain: "antony-chemise.firebaseapp.com",
+  projectId: "antony-chemise",
+  storageBucket: "antony-chemise.firebasestorage.app",
+  messagingSenderId: "111612450828",
+  appId: "1:111612450828:web:ac68dc258a2dc73723f629"
+};
+
+const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-const SHIRTS=[{id:'bleu-coton',label:'Bleu ciel',matiere:'Coton',color:'#87CEEB',striped:false},{id:'raye-coton',label:'Rayé blanc/bleu',matiere:'Coton',color:'#6699CC',striped:true},{id:'grise-coton',label:'Grise',matiere:'Coton',color:'#9E9E9E',striped:false},{id:'verte-lin',label:'Verte',matiere:'Lin',color:'#7B9E6B',striped:false},{id:'bleue-lin',label:'Bleue',matiere:'Lin',color:'#5B7FA6',striped:false},{id:'bleuclr-lin',label:'Bleu clair',matiere:'Lin',color:'#A8D8EA',striped:false}];
-const DAYS=['lundi','mardi','mercredi','jeudi'];
-const DL={lundi:'Lun',mardi:'Mar',mercredi:'Mer',jeudi:'Jeu'};
-let pronostics={},realShirts=null,scores={},history={},currentWeekKey='',currentMonthKey='';
+const SHIRTS = [
+  { id: 'bleu-coton',  label: 'Bleu ciel',      matiere: 'Coton', color: '#87CEEB', striped: false },
+  { id: 'raye-coton',  label: 'Rayé blanc/bleu', matiere: 'Coton', color: '#6699CC', striped: true  },
+  { id: 'grise-coton', label: 'Grise',           matiere: 'Coton', color: '#9E9E9E', striped: false },
+  { id: 'verte-lin',   label: 'Verte',           matiere: 'Lin',   color: '#7B9E6B', striped: false },
+  { id: 'bleue-lin',   label: 'Bleue',           matiere: 'Lin',   color: '#5B7FA6', striped: false },
+  { id: 'bleuclr-lin', label: 'Bleu clair',      matiere: 'Lin',   color: '#A8D8EA', striped: false },
+];
+const DAYS = ['lundi','mardi','mercredi','jeudi'];
+const DAYS_LABEL = { lundi:'Lun', mardi:'Mar', mercredi:'Mer', jeudi:'Jeu' };
 
-function getWeek(d){const dt=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()));const day=dt.getUTCDay()||7;dt.setUTCDate(dt.getUTCDate()+4-day);const ys=new Date(Date.UTC(dt.getUTCFullYear(),0,1));return Math.ceil((((dt-ys)/86400000)+1)/7);}
-
-function init(){const now=new Date(),y=now.getFullYear(),m=String(now.getMonth()+1).padStart(2,'0'),w=getWeek(now);currentWeekKey=`${y}-S${String(w).padStart(2,'0')}`;currentMonthKey=`${y}-${m}`;document.getElementById('weekBadge').innerHTML=`<span class="sync-dot"></span>Semaine ${w} · ${now.toLocaleDateString('fr-FR',{month:'long',year:'numeric'})}`;
-  document.getElementById('shirtsLegend').innerHTML=SHIRTS.map(s=>`<div class="shirt-item"><div class="shirt-swatch ${s.striped?'rayee':''}" style="background:${s.color}"></div><div><div class="shirt-code">${s.label}</div><div class="shirt-matiere">${s.matiere}</div></div></div>`).join('');
-  const opts=SHIRTS.map(s=>`<option value="${s.id}">${s.label} — ${s.matiere}</option>`).join('');
-  DAYS.forEach(d=>{document.getElementById('pick-'+d).innerHTML='<option value="">— Choisir —</option>'+opts;document.getElementById('real-'+d).innerHTML='<option value="">— Chemise —</option>'+opts;});
-  onSnapshot(collection(db,`weeks/${currentWeekKey}/pronostics`),snap=>{pronostics={};snap.forEach(d=>{pronostics[d.id]=d.data();});renderPronostics();renderAdminPlayers();if(realShirts)calcScores();});
-  onSnapshot(doc(db,`weeks/${currentWeekKey}/meta/results`),snap=>{if(snap.exists()){realShirts=snap.data().shirts;DAYS.forEach(d=>{document.getElementById('real-'+d).value=realShirts[d]||'';updatePreview('real-'+d);});calcScores();}else{realShirts=null;scores={};renderResults();}});
-  onSnapshot(collection(db,'history'),snap=>{history={};snap.forEach(d=>{history[d.id]=d.data();});buildMonthSelect();renderRanking();});
-  document.getElementById('loader').style.display='none';
+function getWeekNumber(d) {
+  const date = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+  const day = date.getUTCDay() || 7;
+  date.setUTCDate(date.getUTCDate() + 4 - day);
+  const yearStart = new Date(Date.UTC(date.getUTCFullYear(), 0, 1));
+  return Math.ceil((((date - yearStart) / 86400000) + 1) / 7);
 }
 
-function calcScores(){if(!realShirts)return;scores={};Object.entries(pronostics).forEach(([p,data])=>{let c=0;DAYS.forEach(d=>{if(data.picks[d]===realShirts[d])c++;});const b=DAYS.every(d=>data.picks[d]===realShirts[d])?3:0;scores[p]={correct:c,bonus:b,total:c+b};});renderResults();renderPronostics();}
+const now = new Date();
+const CURRENT_WEEK  = `${now.getFullYear()}-S${String(getWeekNumber(now)).padStart(2,'0')}`;
+const CURRENT_MONTH = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
 
-window.submitPronostic=async function(){const name=document.getElementById('playerName').value.trim();if(!name){showAlert('pronosticAlert','Entrez votre prénom !','info');return;}const picks={};const used=new Set();for(const d of DAYS){const v=document.getElementById('pick-'+d).value;if(!v){showAlert('pronosticAlert','Complétez tous les jours !','info');return;}if(used.has(v)){showAlert('pronosticAlert','Antony ne peut pas porter 2 fois la même chemise !','info');return;}used.add(v);picks[d]=v;}const btn=document.getElementById('btnSubmit');btn.disabled=true;try{await setDoc(doc(db,`weeks/${currentWeekKey}/pronostics`,name),{picks,updatedAt:Date.now()});showAlert('pronosticAlert',`Pronostic de ${name} enregistré ! 🎉`,'success');resetForm(false);}catch(e){showAlert('pronosticAlert','Erreur Firebase : '+e.message,'error');}btn.disabled=false;};
+const pronosticsCol = () => collection(db, 'weeks', CURRENT_WEEK, 'pronostics');
+const realDoc       = () => doc(db, 'weeks', CURRENT_WEEK, 'meta', 'realShirts');
+const scoresDoc     = () => doc(db, 'weeks', CURRENT_WEEK, 'meta', 'scores');
+const historyCol    = () => collection(db, 'history', CURRENT_MONTH, 'scores');
 
-window.resetForm=function(ca=true){document.getElementById('playerName').value='';DAYS.forEach(d=>{document.getElementById('pick-'+d).value='';document.getElementById('prev-'+d).style.background='transparent';});if(ca)document.getElementById('pronosticAlert').innerHTML='';};
+let localPronostics = [], localReal = null, localScores = {};
 
-function renderPronostics(){const el=document.getElementById('pronosticsList');const list=Object.entries(pronostics);document.getElementById('pronosticCount').textContent=list.length;if(!list.length){el.innerHTML='<div class="empty"><div class="empty-icon">🤔</div><p>Personne n\'a encore pronostiqué.</p></div>';return;}el.innerHTML=list.map(([player,data])=>{const sc=scores[player];return`<div class="pronostic-card"><div class="pronostic-header"><span class="player-name">${player}</span>${sc!==undefined?`<span class="score-badge">${sc.total} pt${sc.total>1?'s':''}</span>`:''}</div><div class="pronostic-days">${DAYS.map(d=>{const s=SHIRTS.find(x=>x.id===data.picks[d]);return`<div class="pronostic-day"><div class="day-name">${DL[d]}</div><div><span class="color-dot" style="background:${s?s.color:'#ccc'}"></span>${s?s.label:'—'}</div><div style="color:var(--muted);font-size:.55rem;margin-top:.15rem">${s?s.matiere:''}</div></div>`;}).join('')}</div></div>`;}).join('');}
+async function init() {
+  document.getElementById('weekBadge').textContent =
+    `Semaine ${getWeekNumber(now)} · ${now.toLocaleDateString('fr-FR',{month:'long',year:'numeric'})}`;
+  buildShirtsLegend(); buildSelectOptions(); buildMonthSelect();
+  renderTimeBanner(); loadMeteo();
 
-function renderResults(){const el=document.getElementById('resultsContent');if(!realShirts||!Object.keys(scores).length){el.innerHTML='<div class="empty"><div class="empty-icon">👔</div><p>Les résultats apparaîtront<br>une fois la semaine saisie en Admin.</p></div>';return;}el.innerHTML=Object.entries(scores).sort((a,b)=>b[1].total-a[1].total).map(([player,sc],i)=>{const data=pronostics[player];if(!data)return'';return`<div class="result-card">${sc.bonus?'<div class="bonus-banner">⭐ Ordre parfait ! +3 pts bonus</div>':''}<div class="result-header"><span class="result-name">#${i+1} ${player}</span><div style="text-align:right"><div class="result-score">${sc.total}</div><div class="result-detail">${sc.correct} chemise${sc.correct>1?'s':''} correcte${sc.correct>1?'s':''}${sc.bonus?' + bonus':''}</div></div></div><div class="result-days">${DAYS.map(d=>{const ok=data.picks[d]===realShirts[d];const s=SHIRTS.find(x=>x.id===data.picks[d]);const r=SHIRTS.find(x=>x.id===realShirts[d]);return`<div class="result-day ${ok?'correct':'wrong'}"><div class="day-name">${DL[d]}</div><div>${ok?'<span class="check">✓</span>':'<span class="cross">✗</span>'}</div><div style="margin-top:.25rem;font-size:.55rem;color:var(--muted)">${s?s.label:'—'}${!ok?`<br><span style="color:#27ae60">→ ${r?r.label:'—'}</span>`:''}</div></div>`;}).join('')}</div></div>`;}).join('');}
+  onSnapshot(pronosticsCol(), snap => {
+    localPronostics = snap.docs.map(d => ({ player: d.id, ...d.data() }));
+    document.getElementById('pronosticCount').textContent = localPronostics.length;
+    renderPronostics(); renderAdminPlayers();
+  }, () => { document.getElementById('syncDot').classList.add('offline'); document.getElementById('syncLabel').textContent = 'Hors ligne'; });
 
-window.validateResults=async function(){const real={};const used=new Set();for(const d of DAYS){const v=document.getElementById('real-'+d).value;if(!v){showAlert('adminAlert','Renseignez toutes les chemises.','info');return;}if(used.has(v)){showAlert('adminAlert','Antony ne peut pas porter 2 fois la même chemise !','info');return;}used.add(v);real[d]=v;}try{await setDoc(doc(db,`weeks/${currentWeekKey}/meta/results`),{shirts:real,validatedAt:Date.now()});const md={...(history[currentMonthKey]||{})};Object.entries(pronostics).forEach(([player,data])=>{let c=0;DAYS.forEach(d=>{if(data.picks[d]===real[d])c++;});const b=DAYS.every(d=>data.picks[d]===real[d])?3:0;if(!md[player])md[player]={};md[player][currentWeekKey]=c+b;});await setDoc(doc(db,'history',currentMonthKey),md);showAlert('adminAlert','Scores calculés et enregistrés ! ✓','success');}catch(e){showAlert('adminAlert','Erreur Firebase : '+e.message,'error');}}; 
+  onSnapshot(scoresDoc(), snap => { if (snap.exists()) { localScores = snap.data(); renderResults(); renderPronostics(); } });
+  onSnapshot(realDoc(),   snap => { if (snap.exists()) { localReal = snap.data(); renderResults(); } });
 
-window.resetWeek=async function(){if(!confirm('Réinitialiser tous les pronostics ? (L\'historique mensuel est conservé)'))return;try{const snap=await getDocs(collection(db,`weeks/${currentWeekKey}/pronostics`));await Promise.all(snap.docs.map(d=>deleteDoc(d.ref)));await deleteDoc(doc(db,`weeks/${currentWeekKey}/meta/results`));DAYS.forEach(d=>{document.getElementById('real-'+d).value='';document.getElementById('prev-real-'+d).style.background='transparent';});showAlert('adminAlert','Semaine réinitialisée.','info');}catch(e){showAlert('adminAlert','Erreur : '+e.message,'error');}};
+  document.getElementById('loader').style.display = 'none';
+}
 
-window.deletePlayer=async function(name){if(!confirm(`Supprimer le pronostic de ${name} ?`))return;try{await deleteDoc(doc(db,`weeks/${currentWeekKey}/pronostics`,name));}catch(e){alert('Erreur : '+e.message);}};
+// TIME WINDOW
+function isOpen() { const d = new Date(); return d.getDay()===4 && d.getHours()>=15 && d.getHours()<18; }
+function renderTimeBanner() {
+  const d = new Date(), isThursday = d.getDay()===4;
+  let msg, cls;
+  if (isOpen()) { msg = "🟢 Pronostics ouverts jusqu'à 18h ce soir — Bonne chance !"; cls = 'open'; }
+  else if (isThursday && d.getHours()<15) { msg = "🟠 Les pronostics ouvrent aujourd'hui à 15h."; cls = 'closed'; }
+  else if (isThursday && d.getHours()>=18) { msg = "🟠 Les pronostics sont fermés pour cette semaine (après 18h)."; cls = 'closed'; }
+  else { msg = "🟠 Hors créneau — Les pronostics ouvrent le jeudi de 15h à 18h. Vous pouvez quand même soumettre."; cls = 'closed'; }
+  document.getElementById('timeBanner').innerHTML = `<div class="time-banner ${cls}">${msg}</div>`;
+}
 
-function renderAdminPlayers(){const el=document.getElementById('adminPlayers');const list=Object.keys(pronostics);if(!list.length){el.innerHTML='<p style="font-size:.7rem;color:var(--muted)">Aucun joueur cette semaine.</p>';return;}el.innerHTML=list.map(p=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:.5rem 0;border-bottom:1px solid var(--border)"><span style="font-family:'Playfair Display',serif;font-size:.95rem">${p}</span><button class="btn btn-sm btn-danger" onclick="deletePlayer('${p}')">Supprimer</button></div>`).join('');}
+// MÉTÉO
+async function loadMeteo() {
+  try {
+    const url = 'https://api.open-meteo.com/v1/forecast?latitude=47.4667&longitude=-0.5500&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Europe%2FParis&forecast_days=14';
+    const res = await fetch(url);
+    const data = await res.json();
+    const today = new Date();
+    const dow = today.getDay();
+    const daysUntilMonday = dow === 0 ? 1 : (8 - dow) % 7 || 7;
+    const ICONS = {0:'☀️',1:'🌤',2:'⛅',3:'☁️',45:'🌫',48:'🌫',51:'🌦',53:'🌧',55:'🌧',61:'🌧',63:'🌧',65:'🌧',71:'❄️',73:'❄️',75:'❄️',80:'🌦',81:'🌧',82:'⛈',95:'⛈',96:'⛈',99:'⛈'};
+    const DESC = {0:'Ensoleillé',1:'Peu nuageux',2:'Nuageux',3:'Couvert',45:'Brouillard',48:'Brouillard',51:'Bruine',53:'Bruine légère',55:'Bruine',61:'Pluie légère',63:'Pluie',65:'Forte pluie',71:'Neige légère',73:'Neige',75:'Forte neige',80:'Averses',81:'Averses',82:'Orages',95:'Orage',96:'Orage',99:'Orage violent'};
+    const daily = data.daily;
+    let html = '<div class="meteo-grid">';
+    for (let i = 0; i < 4; i++) {
+      const idx = daysUntilMonday + i;
+      if (idx >= daily.time.length) break;
+      const code = daily.weathercode[idx];
+      const tmax = Math.round(daily.temperature_2m_max[idx]);
+      const tmin = Math.round(daily.temperature_2m_min[idx]);
+      const rain = daily.precipitation_probability_max[idx];
+      const date = new Date(daily.time[idx]).toLocaleDateString('fr-FR',{day:'numeric',month:'short'});
+      html += `<div class="meteo-day">
+        <div class="m-day">${['Lun','Mar','Mer','Jeu'][i]}<br>${date}</div>
+        <div class="m-icon">${ICONS[code]||'🌡'}</div>
+        <div class="m-temp">${tmax}° <span>/ ${tmin}°</span></div>
+        <div class="m-desc">${DESC[code]||''}</div>
+        ${rain>0?`<div class="m-rain">💧 ${rain}%</div>`:''}
+      </div>`;
+    }
+    html += '</div>';
+    document.getElementById('meteoContent').innerHTML = html;
+    document.getElementById('meteoUpdate').textContent = `Actualisé ${new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})}`;
+  } catch(e) {
+    document.getElementById('meteoContent').innerHTML = '<div class="meteo-loading">Météo indisponible</div>';
+  }
+}
 
-function buildMonthSelect(){const sel=document.getElementById('monthSelect');const months=Object.keys(history).sort().reverse();if(!months.includes(currentMonthKey))months.unshift(currentMonthKey);const cur=sel.value||currentMonthKey;sel.innerHTML=months.map(m=>{const[y,mo]=m.split('-');const label=new Date(y,mo-1,1).toLocaleDateString('fr-FR',{month:'long',year:'numeric'});return`<option value="${m}" ${m===cur?'selected':''}>${label.charAt(0).toUpperCase()+label.slice(1)}</option>`;}).join('');}
+// UI HELPERS
+function buildShirtsLegend() {
+  document.getElementById('shirtsLegend').innerHTML = SHIRTS.map(s =>
+    `<div class="shirt-item"><div class="shirt-swatch ${s.striped?'rayee':''}" style="background:${s.color}"></div><div><div class="shirt-code">${s.label}</div><div class="shirt-matiere">${s.matiere}</div></div></div>`
+  ).join('');
+}
+function buildSelectOptions() {
+  const opts = SHIRTS.map(s => `<option value="${s.id}">${s.label} — ${s.matiere}</option>`).join('');
+  DAYS.forEach(d => ['pick-','real-'].forEach(p => { const el = document.getElementById(p+d); if(el) el.innerHTML='<option value="">— Choisir —</option>'+opts; }));
+}
+window.updatePreview = function(dayId) {
+  const isReal = dayId.startsWith('real-');
+  const sel = document.getElementById(isReal ? dayId : 'pick-'+dayId);
+  const prev = document.getElementById('prev-'+dayId);
+  if (!sel||!prev) return;
+  const shirt = SHIRTS.find(s => s.id===sel.value);
+  prev.style.background = shirt ? shirt.color : 'transparent';
+};
+function showAlert(id, msg, type) {
+  document.getElementById(id).innerHTML = `<div class="alert alert-${type}">${msg}</div>`;
+  setTimeout(() => { document.getElementById(id).innerHTML=''; }, 4500);
+}
 
-window.renderRanking=function(){const month=document.getElementById('monthSelect').value||currentMonthKey;const data=history[month]||{};const el=document.getElementById('rankingBody');if(!Object.keys(data).length){el.innerHTML='<div class="empty" style="padding:1.5rem"><p>Aucun résultat pour ce mois.</p></div>';return;}const weeks=new Set();Object.values(data).forEach(pd=>Object.keys(pd).forEach(w=>weeks.add(w)));const sw=[...weeks].sort();el.innerHTML=Object.entries(data).map(([player,wd])=>({player,total:Object.values(wd).reduce((a,b)=>a+b,0),ws:sw.map(w=>wd[w]??'-')})).sort((a,b)=>b.total-a.total).map((r,i)=>{const rc=i===0?'top1':i===1?'top2':i===2?'top3':'';const wc=r.ws.map(s=>`<span class="rank-cell">${s}</span>`).join('');const ec=Array(Math.max(0,4-r.ws.length)).fill('<span class="rank-cell">—</span>').join('');return`<div class="ranking-row"><span class="rank-num ${rc}">${i+1}</span><span class="rank-name">${r.player}</span><span class="rank-total">${r.total}</span>${wc}${ec}</div>`;}).join('');};
+// PRONOSTIC
+window.submitPronostic = async function() {
+  const name = document.getElementById('playerName').value.trim();
+  if (!name) { showAlert('pronosticAlert','Entrez votre prénom !','info'); return; }
+  const picks = {}, used = new Set();
+  for (const day of DAYS) {
+    const val = document.getElementById('pick-'+day).value;
+    if (!val) { showAlert('pronosticAlert','Complétez tous les jours !','info'); return; }
+    if (used.has(val)) { showAlert('pronosticAlert','Antony ne peut pas porter 2 fois la même chemise !','info'); return; }
+    used.add(val); picks[day] = val;
+  }
+  try {
+    await setDoc(doc(pronosticsCol(), name), { picks, submittedAt: new Date().toISOString() });
+    showAlert('pronosticAlert',`Pronostic de ${name} enregistré ! 🎉`,'success');
+    resetForm(false);
+  } catch(e) { showAlert('pronosticAlert','Erreur Firebase : '+e.message,'error'); }
+};
+window.resetForm = function(clearAlert=true) {
+  document.getElementById('playerName').value = '';
+  DAYS.forEach(d => { document.getElementById('pick-'+d).value=''; document.getElementById('prev-'+d).style.background='transparent'; });
+  if (clearAlert) document.getElementById('pronosticAlert').innerHTML = '';
+};
 
-window.showTab=function(id){document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',['pronostic','resultats','classement','admin'][i]===id));document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));document.getElementById('tab-'+id).classList.add('active');if(id==='classement')renderRanking();};
+function renderPronostics() {
+  const el = document.getElementById('pronosticsList');
+  if (!localPronostics.length) { el.innerHTML='<div class="empty"><div class="empty-icon">🤔</div><p>Personne n\'a encore pronostiqué.</p></div>'; return; }
+  el.innerHTML = localPronostics.map(p => {
+    const sc = localScores[p.player];
+    return `<div class="pronostic-card">
+      <div class="pronostic-header"><span class="player-name-big">${p.player}</span>${sc!==undefined?`<span class="score-badge">${sc} pt${sc>1?'s':''}</span>`:''}</div>
+      <div class="pronostic-days">${DAYS.map(d => {
+        const shirt = SHIRTS.find(s => s.id===p.picks[d]);
+        return `<div class="pronostic-day"><div class="day-name">${DAYS_LABEL[d]}</div><div><span class="color-dot" style="background:${shirt?shirt.color:'#ccc'}"></span>${shirt?shirt.label:'—'}</div><div style="color:var(--muted);font-size:0.55rem">${shirt?shirt.matiere:''}</div></div>`;
+      }).join('')}</div>
+    </div>`;
+  }).join('');
+}
 
-window.updatePreview=function(dayId){const selId=dayId.startsWith('real-')?dayId:'pick-'+dayId;const sel=document.getElementById(selId);const prev=document.getElementById('prev-'+dayId);if(!sel||!prev)return;const s=SHIRTS.find(x=>x.id===sel.value);prev.style.background=s?s.color:'transparent';};
+// SCORE CALCULATION
+function calcScore(picks, real) {
+  let exact = 0;
+  const usedReal = new Set(), unmatchedPicks = [];
+  for (const day of DAYS) {
+    if (picks[day] === real[day]) { exact++; usedReal.add(day); }
+    else unmatchedPicks.push(picks[day]);
+  }
+  let partial = 0;
+  for (const shirt of unmatchedPicks) {
+    for (const day of DAYS) {
+      if (!usedReal.has(day) && real[day] === shirt) { partial++; usedReal.add(day); break; }
+    }
+  }
+  const bonus = DAYS.every(d => picks[d]===real[d]) ? 3 : 0;
+  return { exact, partial, bonus, total: exact + partial + bonus };
+}
 
-window.showAlert=function(elId,msg,type){const el=document.getElementById(elId);el.innerHTML=`<div class="alert alert-${type}">${msg}</div>`;setTimeout(()=>{el.innerHTML='';},4000);};
+function renderResults() {
+  const el = document.getElementById('resultsContent');
+  if (!localReal || !Object.keys(localScores).length) {
+    el.innerHTML = '<div class="empty"><div class="empty-icon">👔</div><p>Les résultats apparaîtront<br>une fois la semaine saisie en Admin.</p></div>';
+    return;
+  }
+  const sorted = [...localPronostics].filter(p => localScores[p.player]!==undefined).sort((a,b) => localScores[b.player]-localScores[a.player]);
+  el.innerHTML = sorted.map((p,i) => {
+    const sc = calcScore(p.picks, localReal);
+    return `<div class="result-card">
+      ${sc.bonus>0?'<div class="bonus-banner">⭐ Ordre parfait ! +3 pts bonus</div>':''}
+      <div class="result-header">
+        <span class="result-name">#${i+1} ${p.player}</span>
+        <div style="text-align:right"><div class="result-score-big">${sc.total}</div><div class="result-detail">${sc.exact} exact${sc.exact>1?'s':''} · ${sc.partial} décalé${sc.partial>1?'s':''}${sc.bonus?' · +bonus':''}</div></div>
+      </div>
+      <div class="result-days">${DAYS.map(d => {
+        const isExact   = p.picks[d] === localReal[d];
+        const isPartial = !isExact && Object.values(localReal).includes(p.picks[d]);
+        const shirt     = SHIRTS.find(s => s.id===p.picks[d]);
+        const realShirt = SHIRTS.find(s => s.id===localReal[d]);
+        const cls   = isExact ? 'correct' : isPartial ? 'partial' : 'wrong';
+        const icon  = isExact ? '<span class="check">✓</span>' : isPartial ? '<span class="half">≈</span>' : '<span class="cross">✗</span>';
+        return `<div class="result-day ${cls}"><div class="day-name">${DAYS_LABEL[d]}</div><div>${icon}</div><div style="font-size:0.55rem;color:var(--muted);margin-top:0.2rem">${shirt?shirt.label:'—'}${!isExact&&realShirt?`<br><span style="color:#27ae60">→ ${realShirt.label}</span>`:''}</div></div>`;
+      }).join('')}</div>
+    </div>`;
+  }).join('');
+}
+
+// ADMIN
+window.validateResults = async function() {
+  const real = {}, used = new Set();
+  for (const day of DAYS) {
+    const val = document.getElementById('real-'+day).value;
+    if (!val) { showAlert('adminAlert','Renseignez toutes les chemises.','info'); return; }
+    if (used.has(val)) { showAlert('adminAlert','Antony ne peut pas porter 2 fois la même chemise !','info'); return; }
+    used.add(val); real[day] = val;
+  }
+  const scores = {};
+  for (const p of localPronostics) scores[p.player] = calcScore(p.picks, real).total;
+  try {
+    const batch = writeBatch(db);
+    batch.set(realDoc(), real); batch.set(scoresDoc(), scores);
+    Object.entries(scores).forEach(([player, total]) => batch.set(doc(historyCol(), player), { [CURRENT_WEEK]: total, player }, { merge: true }));
+    await batch.commit();
+    showAlert('adminAlert','Scores calculés et enregistrés ! ✓','success');
+    buildMonthSelect();
+  } catch(e) { showAlert('adminAlert','Erreur : '+e.message,'error'); }
+};
+
+window.resetWeek = async function() {
+  if (!confirm('Réinitialiser les pronostics de cette semaine ? (Historique conservé)')) return;
+  try {
+    const batch = writeBatch(db);
+    localPronostics.forEach(p => batch.delete(doc(pronosticsCol(), p.player)));
+    batch.delete(realDoc()); batch.delete(scoresDoc());
+    await batch.commit();
+    localReal = null; localScores = {};
+    DAYS.forEach(d => { document.getElementById('real-'+d).value=''; document.getElementById('prev-real-'+d).style.background='transparent'; });
+    showAlert('adminAlert','Semaine réinitialisée.','info');
+  } catch(e) { showAlert('adminAlert','Erreur : '+e.message,'error'); }
+};
+
+window.deletePlayer = async function(name) {
+  if (!confirm(`Supprimer le pronostic de ${name} ?`)) return;
+  await deleteDoc(doc(pronosticsCol(), name));
+};
+
+function renderAdminPlayers() {
+  const el = document.getElementById('adminPlayers');
+  if (!localPronostics.length) { el.innerHTML='<p style="font-size:0.7rem;color:var(--muted)">Aucun joueur cette semaine.</p>'; return; }
+  el.innerHTML = localPronostics.map(p =>
+    `<div style="display:flex;align-items:center;justify-content:space-between;padding:0.5rem 0;border-bottom:1px solid var(--border)"><span style="font-family:Playfair Display,serif;font-size:0.95rem">${p.player}</span><button class="btn btn-sm btn-danger" onclick="deletePlayer('${p.player}')">Supprimer</button></div>`
+  ).join('');
+}
+
+// BIG RESET
+window.openResetModal = function() {
+  document.getElementById('resetConfirmInput').value = '';
+  document.getElementById('resetModalAlert').innerHTML = '';
+  document.getElementById('resetModal').style.display = 'flex';
+};
+window.closeResetModal = function() { document.getElementById('resetModal').style.display = 'none'; };
+window.confirmBigReset = async function() {
+  if (document.getElementById('resetConfirmInput').value.trim() !== 'RESET') {
+    document.getElementById('resetModalAlert').innerHTML = '<div class="alert alert-error">Tapez exactement "RESET" pour confirmer.</div>';
+    return;
+  }
+  try {
+    const batch = writeBatch(db);
+    const weeksSnap = await getDocs(collection(db, 'weeks'));
+    for (const wDoc of weeksSnap.docs) {
+      const proSnap = await getDocs(collection(db, 'weeks', wDoc.id, 'pronostics'));
+      proSnap.docs.forEach(d => batch.delete(d.ref));
+      batch.delete(doc(db, 'weeks', wDoc.id, 'meta', 'realShirts'));
+      batch.delete(doc(db, 'weeks', wDoc.id, 'meta', 'scores'));
+    }
+    const histSnap = await getDocs(collection(db, 'history'));
+    for (const mDoc of histSnap.docs) {
+      const scSnap = await getDocs(collection(db, 'history', mDoc.id, 'scores'));
+      scSnap.docs.forEach(d => batch.delete(d.ref));
+    }
+    await batch.commit();
+    localPronostics = []; localReal = null; localScores = {};
+    closeResetModal();
+    showAlert('adminAlert','Big Reset effectué. Tout a été effacé. 🗑','success');
+    renderPronostics(); renderResults(); renderAdminPlayers();
+  } catch(e) {
+    document.getElementById('resetModalAlert').innerHTML = `<div class="alert alert-error">Erreur : ${e.message}</div>`;
+  }
+};
+
+// CLASSEMENT
+async function buildMonthSelect() {
+  const sel = document.getElementById('monthSelect');
+  try {
+    const snap = await getDocs(collection(db, 'history'));
+    const months = snap.docs.map(d => d.id).sort().reverse();
+    if (!months.includes(CURRENT_MONTH)) months.unshift(CURRENT_MONTH);
+    const current = sel.value || CURRENT_MONTH;
+    sel.innerHTML = months.map(m => { const [y,mo]=m.split('-'); const lbl=new Date(y,mo-1,1).toLocaleDateString('fr-FR',{month:'long',year:'numeric'}); return `<option value="${m}" ${m===current?'selected':''}>${lbl.charAt(0).toUpperCase()+lbl.slice(1)}</option>`; }).join('');
+  } catch(e) { sel.innerHTML=`<option value="${CURRENT_MONTH}">${CURRENT_MONTH}</option>`; }
+}
+
+window.renderRanking = async function() {
+  const month = document.getElementById('monthSelect').value || CURRENT_MONTH;
+  const el = document.getElementById('rankingBody');
+  el.innerHTML = '<div class="empty" style="padding:1.5rem"><p>Chargement…</p></div>';
+  try {
+    const snap = await getDocs(collection(db,'history',month,'scores'));
+    if (snap.empty) { el.innerHTML='<div class="empty" style="padding:1.5rem"><p>Aucun résultat pour ce mois.</p></div>'; return; }
+    const weeks = new Set();
+    const players = snap.docs.map(d => { const data=d.data(); Object.keys(data).filter(k=>k.startsWith('20')).forEach(w=>weeks.add(w)); return data; });
+    const sortedWeeks = [...weeks].sort();
+    const rows = players.map(p => ({ player: p.player, total: sortedWeeks.reduce((a,w)=>a+(typeof p[w]==='number'?p[w]:0),0), weekScores: sortedWeeks.map(w=>p[w]??'-') })).sort((a,b)=>b.total-a.total);
+    el.innerHTML = rows.map((r,i) => {
+      const rc = i===0?'top1':i===1?'top2':i===2?'top3':'';
+      const wc = r.weekScores.map(s=>`<span class="rank-cell">${s}</span>`).join('');
+      const ec = Array(Math.max(0,4-r.weekScores.length)).fill('<span class="rank-cell">—</span>').join('');
+      return `<div class="ranking-row"><span class="rank-num ${rc}">${i+1}</span><span class="rank-name">${r.player}</span><span class="rank-total">${r.total}</span>${wc}${ec}</div>`;
+    }).join('');
+  } catch(e) { el.innerHTML='<div class="empty" style="padding:1.5rem"><p>Erreur de chargement.</p></div>'; }
+};
+
+window.showTab = function(id) {
+  document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', ['pronostic','resultats','classement','admin'][i]===id));
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  if (id==='classement') renderRanking();
+};
 
 init();
 </script>
