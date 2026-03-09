@@ -810,9 +810,9 @@
 </div>
 
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getFirestore, doc, collection, setDoc, getDocs, deleteDoc, onSnapshot, writeBatch }
-  from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyB9-6f-jm8CU-enHujiJo8d8ZEHJvyDEaA",
@@ -1060,7 +1060,7 @@ function renderInsights() {
   // Never worn recently
   const neverRecent = SHIRTS.filter(s => counts[s.id] === 0);
   if (neverRecent.length > 0) {
-    insights.push({ icon: '❓', label: 'Chemise mystère', text: `La <strong>${neverRecent.map(s => s.label).join(', ')}</strong> n'est jamais apparue dans l'historique récent. Coup surprise à prévoir ?` });
+    insights.push({ icon: '❓', label: 'Chemise mystère', text: `La <strong>${neverRecent.map(s => s.label).join(', ')}</strong> n\'est jamais apparue dans l\'historique récent. Coup surprise à prévoir ?` });
   }
 
   // Betting consensus
@@ -1154,8 +1154,11 @@ function renderTimeBanner() {
 // MÉTÉO
 async function loadMeteo() {
   try {
+    const controller = new AbortController();
+    const tid = setTimeout(() => controller.abort(), 6000);
     const url = 'https://api.open-meteo.com/v1/forecast?latitude=47.4667&longitude=-0.5500&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Europe%2FParis&forecast_days=14';
-    const res = await fetch(url);
+    const res = await fetch(url, { mode: 'cors', signal: controller.signal });
+    clearTimeout(tid);
     const data = await res.json();
     const today = new Date();
     const dow = today.getDay();
@@ -1184,7 +1187,7 @@ async function loadMeteo() {
     document.getElementById('meteoContent').innerHTML = html;
     document.getElementById('meteoUpdate').textContent = `Actualisé ${new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})}`;
   } catch(e) {
-    document.getElementById('meteoContent').innerHTML = '<div class="meteo-loading">Météo indisponible</div>';
+    document.getElementById('meteoContent').innerHTML = '<div class="meteo-loading">⚠️ Météo indisponible — <a href="https://open-meteo.com" target="_blank" style="color:var(--accent)">voir open-meteo.com</a></div>';
   }
 }
 
@@ -1275,7 +1278,7 @@ function calcScore(picks, real) {
 function renderResults() {
   const el = document.getElementById('resultsContent');
   if (!localReal || !Object.keys(localReal).length) {
-    el.innerHTML = '<div class="empty"><div class="empty-icon">👔</div><p>Les résultats apparaîtront<br>dès que l'admin saisit la première chemise.</p></div>';
+    el.innerHTML = '<div class="empty"><div class="empty-icon">👔</div><p>Les résultats apparaîtront<br>dès que l\'admin saisit la première chemise.</p></div>';
     return;
   }
 
