@@ -810,9 +810,9 @@
 </div>
 
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
 import { getFirestore, doc, collection, setDoc, getDocs, deleteDoc, onSnapshot, writeBatch }
-  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyB9-6f-jm8CU-enHujiJo8d8ZEHJvyDEaA",
@@ -1155,9 +1155,9 @@ function renderTimeBanner() {
 async function loadMeteo() {
   try {
     const controller = new AbortController();
-    const tid = setTimeout(() => controller.abort(), 6000);
+    const tid = setTimeout(() => controller.abort(), 8000);
     const url = 'https://api.open-meteo.com/v1/forecast?latitude=47.4667&longitude=-0.5500&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Europe%2FParis&forecast_days=14';
-    const res = await fetch(url, { mode: 'cors', signal: controller.signal });
+    const res = await fetch(url, { signal: controller.signal });
     clearTimeout(tid);
     const data = await res.json();
     const today = new Date();
