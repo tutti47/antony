@@ -533,6 +533,32 @@
   .insight-text { flex: 1; }
   .insight-label { font-weight: 600; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent); margin-bottom: 0.2rem; }
 
+
+  .btn-day-save {
+    margin-top: 0.5rem;
+    width: 100%;
+    padding: 0.4rem;
+    border: 1.5px solid var(--accent2);
+    background: transparent;
+    color: var(--accent2);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-day-save:hover { background: var(--accent2); color: white; }
+  .btn-day-save.saved { background: var(--accent2); color: white; border-color: var(--accent2); }
+  .day-saved-badge {
+    font-size: 0.58rem;
+    color: var(--accent2);
+    letter-spacing: 0.08em;
+    margin-top: 0.3rem;
+    min-height: 1rem;
+    text-align: center;
+  }
+
 </style>
 </head>
 <body>
@@ -716,12 +742,36 @@
     <p class="section-sub">Réservé à l'arbitre de la semaine</p>
     <div class="player-section">
       <h3>Chemises réelles portées par Antony</h3>
-      <p style="font-size:0.65rem;color:var(--muted);margin-bottom:1rem">Saisissez les vraies chemises pour calculer les scores.</p>
+      <p style="font-size:0.65rem;color:var(--muted);margin-bottom:1rem">Saisissez jour par jour — les résultats partiels s'affichent immédiatement.</p>
       <div class="week-grid">
-        <div class="day-col"><span class="day-label"><strong>Lundi</strong></span><select id="real-lundi" onchange="updatePreview('real-lundi')"><option value="">— Chemise —</option></select><div class="selected-preview" id="prev-real-lundi"></div></div>
-        <div class="day-col"><span class="day-label"><strong>Mardi</strong></span><select id="real-mardi" onchange="updatePreview('real-mardi')"><option value="">— Chemise —</option></select><div class="selected-preview" id="prev-real-mardi"></div></div>
-        <div class="day-col"><span class="day-label"><strong>Mercredi</strong></span><select id="real-mercredi" onchange="updatePreview('real-mercredi')"><option value="">— Chemise —</option></select><div class="selected-preview" id="prev-real-mercredi"></div></div>
-        <div class="day-col"><span class="day-label"><strong>Jeudi</strong></span><select id="real-jeudi" onchange="updatePreview('real-jeudi')"><option value="">— Chemise —</option></select><div class="selected-preview" id="prev-real-jeudi"></div></div>
+        <div class="day-col">
+          <span class="day-label"><strong>Lundi</strong></span>
+          <select id="real-lundi" onchange="updatePreview('real-lundi')"><option value="">— Chemise —</option></select>
+          <div class="selected-preview" id="prev-real-lundi"></div>
+          <button class="btn-day-save" onclick="saveDayResult('lundi')">✓ Valider</button>
+          <div class="day-saved-badge" id="badge-lundi"></div>
+        </div>
+        <div class="day-col">
+          <span class="day-label"><strong>Mardi</strong></span>
+          <select id="real-mardi" onchange="updatePreview('real-mardi')"><option value="">— Chemise —</option></select>
+          <div class="selected-preview" id="prev-real-mardi"></div>
+          <button class="btn-day-save" onclick="saveDayResult('mardi')">✓ Valider</button>
+          <div class="day-saved-badge" id="badge-mardi"></div>
+        </div>
+        <div class="day-col">
+          <span class="day-label"><strong>Mercredi</strong></span>
+          <select id="real-mercredi" onchange="updatePreview('real-mercredi')"><option value="">— Chemise —</option></select>
+          <div class="selected-preview" id="prev-real-mercredi"></div>
+          <button class="btn-day-save" onclick="saveDayResult('mercredi')">✓ Valider</button>
+          <div class="day-saved-badge" id="badge-mercredi"></div>
+        </div>
+        <div class="day-col">
+          <span class="day-label"><strong>Jeudi</strong></span>
+          <select id="real-jeudi" onchange="updatePreview('real-jeudi')"><option value="">— Chemise —</option></select>
+          <div class="selected-preview" id="prev-real-jeudi"></div>
+          <button class="btn-day-save" onclick="saveDayResult('jeudi')">✓ Valider</button>
+          <div class="day-saved-badge" id="badge-jeudi"></div>
+        </div>
       </div>
       <div class="antony-bubble-wrap right">
       <div class="antony-avatar"><img src="data:image/jpeg;base64,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" alt="Antony"></div>
@@ -729,7 +779,6 @@
     </div>
       <div id="adminAlert"></div>
       <div class="actions">
-        <button class="btn btn-primary" onclick="validateResults()">✓ Valider et calculer les scores</button>
         <button class="btn btn-danger btn-sm" onclick="resetWeek()">Réinitialiser la semaine</button>
       </div>
     </div>
@@ -1065,7 +1114,26 @@ async function init() {
   }, () => { document.getElementById('syncDot').classList.add('offline'); document.getElementById('syncLabel').textContent = 'Hors ligne'; });
 
   onSnapshot(scoresDoc(), snap => { if (snap.exists()) { localScores = snap.data(); renderResults(); renderPronostics(); } });
-  onSnapshot(realDoc(),   snap => { if (snap.exists()) { localReal = snap.data(); renderResults(); } });
+  onSnapshot(realDoc(), snap => {
+    if (snap.exists()) {
+      localReal = snap.data();
+      renderResults();
+      // Pre-fill admin selects & badges with already-saved days
+      DAYS.forEach(d => {
+        const val = localReal[d];
+        const sel = document.getElementById('real-'+d);
+        const badge = document.getElementById('badge-'+d);
+        const btn = document.querySelector('[onclick="saveDayResult(\'' + d + '\')"]');
+        if (sel && val) {
+          sel.value = val;
+          updatePreview('real-'+d);
+          if (btn) btn.classList.add('saved');
+          const shirt = SHIRTS.find(s => s.id === val);
+          if (badge && shirt) badge.textContent = '✓ ' + shirt.label;
+        }
+      });
+    }
+  });
 
   const lb = document.getElementById('loaderBar');
   if (lb) { lb.style.animation='none'; lb.style.width='100%'; setTimeout(()=>{ const l=document.getElementById('loader'); if(l){l.style.opacity='0'; l.style.transition='opacity 0.3s'; setTimeout(()=>l.remove(),300);} },300); }
@@ -1184,69 +1252,139 @@ function renderPronostics() {
 
 // SCORE CALCULATION
 function calcScore(picks, real) {
+  // Only score days that have been entered (partial week support)
+  const knownDays = DAYS.filter(d => real[d]);
+  const allDone = knownDays.length === 4;
+
   let exact = 0;
   const usedReal = new Set(), unmatchedPicks = [];
-  for (const day of DAYS) {
+  for (const day of knownDays) {
     if (picks[day] === real[day]) { exact++; usedReal.add(day); }
     else unmatchedPicks.push(picks[day]);
   }
   let partial = 0;
   for (const shirt of unmatchedPicks) {
-    for (const day of DAYS) {
+    for (const day of knownDays) {
       if (!usedReal.has(day) && real[day] === shirt) { partial++; usedReal.add(day); break; }
     }
   }
-  const bonus = DAYS.every(d => picks[d]===real[d]) ? 3 : 0;
-  return { exact, partial, bonus, total: exact + partial + bonus };
+  const bonus = allDone && DAYS.every(d => picks[d]===real[d]) ? 3 : 0;
+  return { exact, partial, bonus, total: exact + partial + bonus, partial_total: exact + partial, knownDays: knownDays.length, allDone };
 }
 
 function renderResults() {
   const el = document.getElementById('resultsContent');
-  if (!localReal || !Object.keys(localScores).length) {
-    el.innerHTML = '<div class="empty"><div class="empty-icon">👔</div><p>Les résultats apparaîtront<br>une fois la semaine saisie en Admin.</p></div>';
+  if (!localReal || !Object.keys(localReal).length) {
+    el.innerHTML = '<div class="empty"><div class="empty-icon">👔</div><p>Les résultats apparaîtront<br>dès que l'admin saisit la première chemise.</p></div>';
     return;
   }
-  const sorted = [...localPronostics].filter(p => localScores[p.player]!==undefined).sort((a,b) => localScores[b.player]-localScores[a.player]);
-  el.innerHTML = sorted.map((p,i) => {
+
+  const knownDays = DAYS.filter(d => localReal[d]);
+  const allDone = knownDays.length === 4;
+  const remainingDays = DAYS.filter(d => !localReal[d]);
+
+  const sorted = [...localPronostics]
+    .filter(p => localScores[p.player] !== undefined || knownDays.length > 0)
+    .sort((a,b) => {
+      const sa = calcScore(a.picks, localReal);
+      const sb = calcScore(b.picks, localReal);
+      return sb.partial_total - sa.partial_total;
+    });
+
+  const progressBanner = !allDone ? `
+    <div style="background:#fdf5ee;border:1.5px solid var(--accent);padding:0.7rem 1rem;margin-bottom:1rem;font-size:0.72rem;display:flex;align-items:center;gap:0.5rem">
+      <span>⏳</span>
+      <span>Semaine en cours — <strong>${knownDays.length}/4 jours</strong> saisis.
+      ${remainingDays.length ? 'En attente : ' + remainingDays.map(d => d.charAt(0).toUpperCase()+d.slice(1)).join(', ') + '.' : ''}
+      </span>
+    </div>` : '';
+
+  el.innerHTML = progressBanner + sorted.map((p, i) => {
     const sc = calcScore(p.picks, localReal);
     return `<div class="result-card">
       ${sc.bonus>0?'<div class="bonus-banner">⭐ Ordre parfait ! +3 pts bonus</div>':''}
       <div class="result-header">
         <span class="result-name">#${i+1} ${p.player}</span>
-        <div style="text-align:right"><div class="result-score-big">${sc.total}</div><div class="result-detail">${sc.exact} exact${sc.exact>1?'s':''} · ${sc.partial} décalé${sc.partial>1?'s':''}${sc.bonus?' · +bonus':''}</div></div>
+        <div style="text-align:right">
+          <div class="result-score-big">${sc.partial_total}${!allDone ? '<span style="font-size:0.9rem;opacity:0.6"> pts</span>' : sc.bonus > 0 ? ' + 3🌟' : ''}</div>
+          <div class="result-detail">${sc.exact} exact${sc.exact>1?'s':''} · ${sc.partial} décalé${sc.partial>1?'s':''}${allDone ? (sc.bonus?' · +bonus':'') : ' · ' + knownDays.length + '/4 jours'}</div>
+        </div>
       </div>
       <div class="result-days">${DAYS.map(d => {
-        const isExact   = p.picks[d] === localReal[d];
-        const isPartial = !isExact && Object.values(localReal).includes(p.picks[d]);
+        const known = !!localReal[d];
+        const isExact   = known && p.picks[d] === localReal[d];
+        const isPartial = known && !isExact && Object.values(localReal).includes(p.picks[d]);
+        const isPending = !known;
         const shirt     = SHIRTS.find(s => s.id===p.picks[d]);
-        const realShirt = SHIRTS.find(s => s.id===localReal[d]);
-        const cls   = isExact ? 'correct' : isPartial ? 'partial' : 'wrong';
-        const icon  = isExact ? '<span class="check">✓</span>' : isPartial ? '<span class="half">≈</span>' : '<span class="cross">✗</span>';
-        return `<div class="result-day ${cls}"><div class="day-name">${DAYS_LABEL[d]}</div><div>${icon}</div><div style="font-size:0.55rem;color:var(--muted);margin-top:0.2rem">${shirt?shirt.label:'—'}${!isExact&&realShirt?`<br><span style="color:#27ae60">→ ${realShirt.label}</span>`:''}</div></div>`;
+        const realShirt = known ? SHIRTS.find(s => s.id===localReal[d]) : null;
+        const cls   = isPending ? '' : isExact ? 'correct' : isPartial ? 'partial' : 'wrong';
+        const icon  = isPending
+          ? '<span style="color:var(--muted);font-size:0.8rem">…</span>'
+          : isExact ? '<span class="check">✓</span>'
+          : isPartial ? '<span class="half">≈</span>'
+          : '<span class="cross">✗</span>';
+        return `<div class="result-day ${cls}" style="${isPending ? 'opacity:0.45' : ''}">
+          <div class="day-name">${DAYS_LABEL[d]}</div>
+          <div>${icon}</div>
+          <div style="font-size:0.55rem;color:var(--muted);margin-top:0.2rem">
+            ${shirt?shirt.label:'—'}
+            ${known && !isExact && realShirt ? '<br><span style="color:#27ae60">→ '+realShirt.label+'</span>' : ''}
+            ${isPending ? '<br><span style="font-size:0.5rem">à venir</span>' : ''}
+          </div>
+        </div>`;
       }).join('')}</div>
     </div>`;
   }).join('');
 }
 
 // ADMIN
-window.validateResults = async function() {
-  const real = {}, used = new Set();
-  for (const day of DAYS) {
-    const val = document.getElementById('real-'+day).value;
-    if (!val) { showAlert('adminAlert','Renseignez toutes les chemises.','info'); return; }
-    if (used.has(val)) { showAlert('adminAlert','Antony ne peut pas porter 2 fois la même chemise !','info'); return; }
-    used.add(val); real[day] = val;
+// Save a single day result
+window.saveDayResult = async function(day) {
+  const val = document.getElementById('real-'+day).value;
+  if (!val) { showAlert('adminAlert', 'Choisissez une chemise pour ' + day + ' !', 'info'); return; }
+
+  // Check duplicate vs already saved days
+  const existingVals = Object.entries(localReal || {}).filter(([d]) => d !== day).map(([,v]) => v);
+  if (existingVals.includes(val)) {
+    showAlert('adminAlert', 'Antony ne peut pas porter 2 fois la même chemise dans la semaine !', 'info');
+    return;
   }
-  const scores = {};
-  for (const p of localPronostics) scores[p.player] = calcScore(p.picks, real).total;
+
   try {
-    const batch = writeBatch(db);
-    batch.set(realDoc(), real); batch.set(scoresDoc(), scores);
-    Object.entries(scores).forEach(([player, total]) => batch.set(doc(historyCol(), player), { [CURRENT_WEEK]: total, player }, { merge: true }));
-    await batch.commit();
-    showAlert('adminAlert','Scores calculés et enregistrés ! ✓','success');
-    buildMonthSelect();
-  } catch(e) { showAlert('adminAlert','Erreur : '+e.message,'error'); }
+    // Merge new day into realShirts doc
+    const newReal = { ...(localReal || {}), [day]: val };
+    await setDoc(realDoc(), newReal);
+
+    // Recalculate scores with all known days so far
+    const scores = {};
+    for (const p of localPronostics) {
+      scores[p.player] = calcScore(p.picks, newReal).partial_total;
+    }
+    await setDoc(scoresDoc(), scores);
+
+    // If all 4 days done → save to monthly history
+    if (Object.keys(newReal).length === 4) {
+      const batch = writeBatch(db);
+      const finalScores = {};
+      for (const p of localPronostics) finalScores[p.player] = calcScore(p.picks, newReal).total;
+      Object.entries(finalScores).forEach(([player, total]) => {
+        batch.set(doc(historyCol(), player), { [CURRENT_WEEK]: total, player }, { merge: true });
+      });
+      await batch.commit();
+      showAlert('adminAlert', 'Semaine complète ! Scores finaux enregistrés dans le classement ✓', 'success');
+      buildMonthSelect();
+    } else {
+      showAlert('adminAlert', day.charAt(0).toUpperCase() + day.slice(1) + ' enregistré ✓', 'success');
+    }
+
+    // Update badge
+    const badge = document.getElementById('badge-'+day);
+    const shirt = SHIRTS.find(s => s.id === val);
+    if (badge && shirt) badge.textContent = '✓ ' + shirt.label;
+    const btn = document.querySelector(`[onclick="saveDayResult('${day}')"]`);
+    if (btn) btn.classList.add('saved');
+
+  } catch(e) { showAlert('adminAlert', 'Erreur : ' + e.message, 'error'); }
 };
 
 window.resetWeek = async function() {
@@ -1257,7 +1395,14 @@ window.resetWeek = async function() {
     batch.delete(realDoc()); batch.delete(scoresDoc());
     await batch.commit();
     localReal = null; localScores = {};
-    DAYS.forEach(d => { document.getElementById('real-'+d).value=''; document.getElementById('prev-real-'+d).style.background='transparent'; });
+    DAYS.forEach(d => {
+      document.getElementById('real-'+d).value='';
+      document.getElementById('prev-real-'+d).style.background='transparent';
+      const badge = document.getElementById('badge-'+d);
+      if (badge) badge.textContent = '';
+      const btn = document.querySelector('[onclick="saveDayResult(\''+d+'\')"]');
+      if (btn) btn.classList.remove('saved');
+    });
     showAlert('adminAlert','Semaine réinitialisée.','info');
   } catch(e) { showAlert('adminAlert','Erreur : '+e.message,'error'); }
 };
