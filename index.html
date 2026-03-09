@@ -797,8 +797,24 @@ function getWeekNumber(d) {
 }
 
 const now = new Date();
-const CURRENT_WEEK  = `${now.getFullYear()}-S${String(getWeekNumber(now)).padStart(2,'0')}`;
-const CURRENT_MONTH = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+
+// La semaine de jeu va du jeudi au mercredi suivant.
+// Lundi/Mardi/Mercredi → on utilise la clé de la semaine précédente
+// (les pronostics ont été soumis jeudi dernier)
+function getGameWeekDate(d) {
+  const day = d.getDay(); // 0=Dim,1=Lun,2=Mar,3=Mer,4=Jeu,5=Ven,6=Sam
+  if (day >= 1 && day <= 3) {
+    // Lun/Mar/Mer → revenir au jeudi précédent
+    const prev = new Date(d);
+    prev.setDate(d.getDate() - (day + 3));
+    return prev;
+  }
+  return d;
+}
+
+const gameDate = getGameWeekDate(now);
+const CURRENT_WEEK  = `${gameDate.getFullYear()}-S${String(getWeekNumber(gameDate)).padStart(2,'0')}`;
+const CURRENT_MONTH = `${gameDate.getFullYear()}-${String(gameDate.getMonth()+1).padStart(2,'0')}`;
 
 const pronosticsCol = () => collection(db, 'weeks', CURRENT_WEEK, 'pronostics');
 const realDoc       = () => doc(db, 'weeks', CURRENT_WEEK, 'meta', 'realShirts');
