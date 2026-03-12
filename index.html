@@ -847,27 +847,58 @@ function getWeekNumber(d) {
 
 const now = new Date();
 
-// La semaine de jeu va du jeudi au mercredi suivant.
-// Lundi/Mardi/Mercredi → on utilise la clé de la semaine précédente
-// (les pronostics ont été soumis jeudi dernier)
-function getGameWeekDate(d) {
-  const day = d.getDay(); // 0=Dim,1=Lun,2=Mar,3=Mer,4=Jeu,5=Ven,6=Sam
-  if (day >= 1 && day <= 3) {
-    // Lun/Mar/Mer → revenir au jeudi précédent
-    const prev = new Date(d);
-    prev.setDate(d.getDate() - (day + 3));
-    return prev;
-  }
-  return d;
+// ── Logique des semaines ────────────────────────────────────────────────────
+// Le cycle de jeu :
+//   - Jeudi 15h → Dimanche 23h59 : pronostics ouverts pour la SEMAINE SUIVANTE
+//   - Lundi → Dimanche : résultats visibles pour la semaine EN COURS
+//
+// On distingue deux clés :
+//   PLAY_WEEK   = semaine pour laquelle on parie (= semaine suivante jeu/ven/sam/dim)
+//   RESULT_WEEK = semaine dont on voit les résultats (= semaine en cours lun→dim)
+//
+// Règle ISO : la semaine contenant le jeudi définit le numéro de semaine.
+// Ex: aujourd'hui jeudi 12 mars 2026 = S11
+//     Les données de cette semaine (chemises lun→jeu) sont stockées en S10
+//     (car les pronostics ont été posés jeudi S10, pour la semaine S11 de jeu)
+//
+// SOLUTION SIMPLE : 
+//   RESULT_WEEK = semaine ISO de la semaine PRÉCÉDENTE (là où les pronostics ont été posés)
+//   PLAY_WEEK   = semaine ISO actuelle si jeu/ven/sam/dim (pour les nouveaux paris)
+//                 semaine ISO actuelle si lun/mar/mer (pas encore de nouveaux paris)
+
+function weekKey(d) {
+  const yr = d.getFullYear();
+  return `${yr}-S${String(getWeekNumber(d)).padStart(2,'0')}`;
 }
 
-const gameDate = getGameWeekDate(now);
-const CURRENT_WEEK  = `${gameDate.getFullYear()}-S${String(getWeekNumber(gameDate)).padStart(2,'0')}`;
-const CURRENT_MONTH = `${gameDate.getFullYear()}-${String(gameDate.getMonth()+1).padStart(2,'0')}`;
+function prevWeekKey(d) {
+  const prev = new Date(d);
+  prev.setDate(d.getDate() - 7);
+  return weekKey(prev);
+}
 
-const pronosticsCol = () => collection(db, 'weeks', CURRENT_WEEK, 'pronostics');
-const realDoc       = () => doc(db, 'weeks', CURRENT_WEEK, 'meta', 'realShirts');
-const scoresDoc     = () => doc(db, 'weeks', RESULTS_WEEK, 'meta', 'scores');
+function nextWeekKey(d) {
+  const next = new Date(d);
+  next.setDate(d.getDate() + 7);
+  return weekKey(next);
+}
+
+const dow = now.getDay(); // 0=Dim,1=Lun,2=Mar,3=Mer,4=Jeu,5=Ven,6=Sam
+const hour = now.getHours();
+
+// Résultats : semaine précédente (là où les pronostics ont été posés jeudi dernier)
+// Lun/Mar/Mer/Jeu/Ven/Sam/Dim → toujours la semaine d'avant
+const RESULT_WEEK = prevWeekKey(now);
+
+// Pronostics : semaine actuelle si jeudi (après 15h) / ven / sam / dim
+//              semaine actuelle si lun/mar/mer (pas encore ouvert mais même clé)
+const PLAY_WEEK = weekKey(now);
+
+const CURRENT_MONTH = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+
+const pronosticsCol = () => collection(db, 'weeks', PLAY_WEEK,   'pronostics');
+const realDoc       = () => doc(db,        'weeks', RESULT_WEEK, 'meta', 'realShirts');
+const scoresDoc     = () => doc(db,        'weeks', RESULT_WEEK, 'meta', 'scores');
 const historyCol    = () => collection(db, 'history', CURRENT_MONTH, 'scores');
 
 let localPronostics = [], localReal = null, localScores = {};
@@ -1141,11 +1172,11 @@ async function init() {
 
 // TIME WINDOW
 function isOpen() {
-  const d = new Date(), dow = d.getDay(), h = d.getHours(), min = d.getMinutes();
-  // Open: Thu 15h→18h, Thu 18h→Sun 23h59
-  if (dow === 4 && h >= 15) return true;
-  if (dow === 5 || dow === 6) return true;
-  if (dow === 0 && (h < 23 || (h === 23 && min <= 59))) return true;
+  const d = new Date(), dw = d.getDay(), h = d.getHours();
+  // Ouvert : jeudi 15h → dimanche 23h59
+  if (dw === 4 && h >= 15) return true;
+  if (dw === 5 || dw === 6) return true;
+  if (dw === 0) return true;
   return false;
 }
 function renderTimeBanner() {
