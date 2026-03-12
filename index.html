@@ -867,7 +867,7 @@ const CURRENT_MONTH = `${gameDate.getFullYear()}-${String(gameDate.getMonth()+1)
 
 const pronosticsCol = () => collection(db, 'weeks', CURRENT_WEEK, 'pronostics');
 const realDoc       = () => doc(db, 'weeks', CURRENT_WEEK, 'meta', 'realShirts');
-const scoresDoc     = () => doc(db, 'weeks', CURRENT_WEEK, 'meta', 'scores');
+const scoresDoc     = () => doc(db, 'weeks', RESULTS_WEEK, 'meta', 'scores');
 const historyCol    = () => collection(db, 'history', CURRENT_MONTH, 'scores');
 
 let localPronostics = [], localReal = null, localScores = {};
@@ -1140,14 +1140,28 @@ async function init() {
 }
 
 // TIME WINDOW
-function isOpen() { const d = new Date(); return d.getDay()===4 && d.getHours()>=15 && d.getHours()<18; }
+function isOpen() {
+  const d = new Date(), dow = d.getDay(), h = d.getHours(), min = d.getMinutes();
+  // Open: Thu 15h→18h, Thu 18h→Sun 23h59
+  if (dow === 4 && h >= 15) return true;
+  if (dow === 5 || dow === 6) return true;
+  if (dow === 0 && (h < 23 || (h === 23 && min <= 59))) return true;
+  return false;
+}
 function renderTimeBanner() {
-  const d = new Date(), isThursday = d.getDay()===4;
+  const d = new Date(), dow = d.getDay(), h = d.getHours();
+  const isThursday = dow === 4;
+  const isWeekend  = dow === 5 || dow === 6 || dow === 0; // ven/sam/dim
   let msg, cls;
-  if (isOpen()) { msg = "🟢 Pronostics ouverts jusqu'à 18h ce soir — Bonne chance !"; cls = 'open'; }
-  else if (isThursday && d.getHours()<15) { msg = "🟠 Les pronostics ouvrent aujourd'hui à 15h."; cls = 'closed'; }
-  else if (isThursday && d.getHours()>=18) { msg = "🟠 Les pronostics sont fermés pour cette semaine (après 18h)."; cls = 'closed'; }
-  else { msg = "🟠 Hors créneau — Les pronostics ouvrent le jeudi de 15h à 18h. Vous pouvez quand même soumettre."; cls = 'closed'; }
+  if (isThursday && h >= 15 && h < 18) {
+    msg = "🟢 Pronostics ouverts jusqu'à 18h ce soir — pariez pour la semaine prochaine !"; cls = 'open';
+  } else if (isThursday && h < 15) {
+    msg = "🟠 Les pronostics ouvrent aujourd'hui à 15h pour la semaine prochaine."; cls = 'closed';
+  } else if ((isThursday && h >= 18) || isWeekend) {
+    msg = "🟢 Pronostics ouverts jusqu'à dimanche 23h59 — pariez pour la semaine prochaine !"; cls = 'open';
+  } else {
+    msg = "🟠 Hors créneau — Les pronostics ouvrent le jeudi à 15h. Vous pouvez quand même soumettre."; cls = 'closed';
+  }
   document.getElementById('timeBanner').innerHTML = `<div class="time-banner ${cls}">${msg}</div>`;
 }
 
@@ -1255,7 +1269,7 @@ function renderPronostics() {
 
 // SCORE CALCULATION
 function calcScore(picks, real) {
-  // Only score days that have been entered (partial week support)
+  // +3 pts bonne chemise bon jour, +1 pt bonne chemise mauvais jour
   const knownDays = DAYS.filter(d => real[d]);
   const allDone = knownDays.length === 4;
 
@@ -1271,8 +1285,9 @@ function calcScore(picks, real) {
       if (!usedReal.has(day) && real[day] === shirt) { partial++; usedReal.add(day); break; }
     }
   }
-  const bonus = allDone && DAYS.every(d => picks[d]===real[d]) ? 3 : 0;
-  return { exact, partial, bonus, total: exact + partial + bonus, partial_total: exact + partial, knownDays: knownDays.length, allDone };
+  // +3 exact, +1 partial, no bonus
+  const total = (exact * 3) + (partial * 1);
+  return { exact, partial, bonus: 0, total, partial_total: total, knownDays: knownDays.length, allDone };
 }
 
 function renderResults() {
@@ -1305,12 +1320,11 @@ function renderResults() {
   el.innerHTML = progressBanner + sorted.map((p, i) => {
     const sc = calcScore(p.picks, localReal);
     return `<div class="result-card">
-      ${sc.bonus>0?'<div class="bonus-banner">⭐ Ordre parfait ! +3 pts bonus</div>':''}
       <div class="result-header">
         <span class="result-name">#${i+1} ${p.player}</span>
         <div style="text-align:right">
-          <div class="result-score-big">${sc.partial_total}${!allDone ? '<span style="font-size:0.9rem;opacity:0.6"> pts</span>' : sc.bonus > 0 ? ' + 3🌟' : ''}</div>
-          <div class="result-detail">${sc.exact} exact${sc.exact>1?'s':''} · ${sc.partial} décalé${sc.partial>1?'s':''}${allDone ? (sc.bonus?' · +bonus':'') : ' · ' + knownDays.length + '/4 jours'}</div>
+          <div class="result-score-big">${sc.total} pt${sc.total > 1 ? 's' : ''}</div>
+          <div class="result-detail">${sc.exact}×+3 · ${sc.partial}×+1${!allDone ? ' · ' + knownDays.length + '/4 jours' : ''}</div>
         </div>
       </div>
       <div class="result-days">${DAYS.map(d => {
