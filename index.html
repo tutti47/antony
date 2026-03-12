@@ -905,7 +905,7 @@ const realDoc           = () => doc(db, 'weeks', RESULT_WEEK, 'meta', 'realShirt
 const scoresDoc         = () => doc(db, 'weeks', RESULT_WEEK, 'meta', 'scores');
 const historyCol        = () => collection(db, 'history', CURRENT_MONTH, 'scores');
 
-let localPronostics = [], localReal = null, localScores = {};
+let localPronostics = [], localResultPronostics = [], localReal = null, localScores = {};
 
 const PLAYER_MESSAGES = {
   'alexis': { text: 'Tu participes ? Cool, si tu gagnes on va en week-end Thalasso ensemble 😏', emoji: '😏', face: '😏', color: '#e8a0bf' },
@@ -1142,20 +1142,21 @@ async function init() {
   buildShirtsLegend(); buildSelectOptions(); buildMonthSelect();
   renderTimeBanner(); loadMeteo();
 
-  // Écoute les pronostics de la semaine EN COURS (pour afficher les résultats)
+  // S10 : pronostics dont on affiche les résultats cette semaine
   onSnapshot(resultPronosticsCol(), snap => {
-    localPronostics = snap.docs.map(d => ({ player: d.id, ...d.data() }));
-    renderResults(); renderAdminPlayers();
+    localResultPronostics = snap.docs.map(d => ({ player: d.id, ...d.data() }));
+    renderResults();
+    renderAdminPlayers();
   });
 
-  // Écoute les pronostics de la semaine SUIVANTE (pour afficher ce qui a été soumis)
+  // S11 : nouveaux pronostics soumis pour la semaine prochaine
   onSnapshot(pronosticsCol(), snap => {
-    const nextPronostics = snap.docs.map(d => ({ player: d.id, ...d.data() }));
-    document.getElementById('pronosticCount').textContent = nextPronostics.length;
-    renderPronostics(nextPronostics);
+    localPronostics = snap.docs.map(d => ({ player: d.id, ...d.data() }));
+    document.getElementById('pronosticCount').textContent = localPronostics.length;
+    renderPronostics();
   }, () => { document.getElementById('syncDot').classList.add('offline'); document.getElementById('syncLabel').textContent = 'Hors ligne'; });
 
-  onSnapshot(scoresDoc(), snap => { if (snap.exists()) { localScores = snap.data(); renderResults(); renderPronostics(); } });
+  onSnapshot(scoresDoc(), snap => { if (snap.exists()) { localScores = snap.data(); renderResults(); } });
   onSnapshot(realDoc(), snap => {
     if (snap.exists()) {
       localReal = snap.data();
@@ -1294,8 +1295,7 @@ window.resetForm = function(clearAlert=true) {
   if (clearAlert) document.getElementById('pronosticAlert').innerHTML = '';
 };
 
-function renderPronostics(pronostics) {
-  if (pronostics) localPronostics = pronostics;
+function renderPronostics() {
   const el = document.getElementById('pronosticsList');
   if (!localPronostics.length) { el.innerHTML='<div class="empty"><div class="empty-icon">🤔</div><p>Personne n\'a encore pronostiqué.</p></div>'; return; }
   el.innerHTML = localPronostics.map(p => {
@@ -1344,7 +1344,7 @@ function renderResults() {
   const allDone = knownDays.length === 4;
   const remainingDays = DAYS.filter(d => !localReal[d]);
 
-  const sorted = [...localPronostics]
+  const sorted = [...localResultPronostics]
     .filter(p => localScores[p.player] !== undefined || knownDays.length > 0)
     .sort((a,b) => {
       const sa = calcScore(a.picks, localReal);
@@ -1417,7 +1417,7 @@ window.saveDayResult = async function(day) {
 
     // Recalculate scores with all known days so far
     const scores = {};
-    for (const p of localPronostics) {
+    for (const p of localResultPronostics) {
       scores[p.player] = calcScore(p.picks, newReal).partial_total;
     }
     await setDoc(scoresDoc(), scores);
@@ -1426,7 +1426,7 @@ window.saveDayResult = async function(day) {
     if (Object.keys(newReal).length === 4) {
       const batch = writeBatch(db);
       const finalScores = {};
-      for (const p of localPronostics) finalScores[p.player] = calcScore(p.picks, newReal).total;
+      for (const p of localResultPronostics) finalScores[p.player] = calcScore(p.picks, newReal).total;
       Object.entries(finalScores).forEach(([player, total]) => {
         batch.set(doc(historyCol(), player), { [CURRENT_WEEK]: total, player }, { merge: true });
       });
