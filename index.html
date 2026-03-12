@@ -896,6 +896,7 @@ const PLAY_WEEK = weekKey(now);
 
 const CURRENT_MONTH = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
 
+console.log('🗓 PLAY_WEEK:', PLAY_WEEK, '| RESULT_WEEK:', RESULT_WEEK, '| dow:', dow, '| hour:', hour);
 const pronosticsCol = () => collection(db, 'weeks', PLAY_WEEK,   'pronostics');
 const realDoc       = () => doc(db,        'weeks', RESULT_WEEK, 'meta', 'realShirts');
 const scoresDoc     = () => doc(db,        'weeks', RESULT_WEEK, 'meta', 'scores');
