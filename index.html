@@ -897,10 +897,13 @@ const PLAY_WEEK = weekKey(now);
 const CURRENT_MONTH = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
 
 console.log('🗓 PLAY_WEEK:', PLAY_WEEK, '| RESULT_WEEK:', RESULT_WEEK, '| dow:', dow, '| hour:', hour);
-const pronosticsCol = () => collection(db, 'weeks', PLAY_WEEK,   'pronostics');
-const realDoc       = () => doc(db,        'weeks', RESULT_WEEK, 'meta', 'realShirts');
-const scoresDoc     = () => doc(db,        'weeks', RESULT_WEEK, 'meta', 'scores');
-const historyCol    = () => collection(db, 'history', CURRENT_MONTH, 'scores');
+// Pour soumettre de nouveaux pronostics (semaine prochaine)
+const pronosticsCol     = () => collection(db, 'weeks', PLAY_WEEK,   'pronostics');
+// Pour lire les pronostics dont on affiche les résultats (semaine passée)
+const resultPronosticsCol = () => collection(db, 'weeks', RESULT_WEEK, 'pronostics');
+const realDoc           = () => doc(db, 'weeks', RESULT_WEEK, 'meta', 'realShirts');
+const scoresDoc         = () => doc(db, 'weeks', RESULT_WEEK, 'meta', 'scores');
+const historyCol        = () => collection(db, 'history', CURRENT_MONTH, 'scores');
 
 let localPronostics = [], localReal = null, localScores = {};
 
@@ -1139,10 +1142,17 @@ async function init() {
   buildShirtsLegend(); buildSelectOptions(); buildMonthSelect();
   renderTimeBanner(); loadMeteo();
 
-  onSnapshot(pronosticsCol(), snap => {
+  // Écoute les pronostics de la semaine EN COURS (pour afficher les résultats)
+  onSnapshot(resultPronosticsCol(), snap => {
     localPronostics = snap.docs.map(d => ({ player: d.id, ...d.data() }));
-    document.getElementById('pronosticCount').textContent = localPronostics.length;
-    renderPronostics(); renderAdminPlayers();
+    renderResults(); renderAdminPlayers();
+  });
+
+  // Écoute les pronostics de la semaine SUIVANTE (pour afficher ce qui a été soumis)
+  onSnapshot(pronosticsCol(), snap => {
+    const nextPronostics = snap.docs.map(d => ({ player: d.id, ...d.data() }));
+    document.getElementById('pronosticCount').textContent = nextPronostics.length;
+    renderPronostics(nextPronostics);
   }, () => { document.getElementById('syncDot').classList.add('offline'); document.getElementById('syncLabel').textContent = 'Hors ligne'; });
 
   onSnapshot(scoresDoc(), snap => { if (snap.exists()) { localScores = snap.data(); renderResults(); renderPronostics(); } });
@@ -1284,7 +1294,8 @@ window.resetForm = function(clearAlert=true) {
   if (clearAlert) document.getElementById('pronosticAlert').innerHTML = '';
 };
 
-function renderPronostics() {
+function renderPronostics(pronostics) {
+  if (pronostics) localPronostics = pronostics;
   const el = document.getElementById('pronosticsList');
   if (!localPronostics.length) { el.innerHTML='<div class="empty"><div class="empty-icon">🤔</div><p>Personne n\'a encore pronostiqué.</p></div>'; return; }
   el.innerHTML = localPronostics.map(p => {
